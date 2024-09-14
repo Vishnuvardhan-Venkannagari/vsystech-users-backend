@@ -7,8 +7,8 @@ import datetime
 import time
 import sys
 import os
-sys.path.append("/Users/vishnureddy/Documents/MyProjects/vsystech-user-app/opt/backend/framework/")
-import restapi
+# sys.path.append("/Users/vishnureddy/Documents/MyProjects/vsystech-user-app/opt/backend/framework/")
+# import restapi
 
 
 

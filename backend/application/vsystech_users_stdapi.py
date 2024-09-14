@@ -8,7 +8,8 @@ import sys
 import os
 import pkgutil
 import importlib
-sys.path.append("/Users/vishnureddy/Documents/MyProjects/vsystech-user-app/opt/backend/framework/")
+# sys.path.append("/Users/vishnureddy/Documents/MyProjects/vsystech-user-app/opt/backend/framework/")
+sys.path.append("/opt/vsystech-users-backend/backend/framework")
 import restapi
 
 app = fastapi.FastAPI(version='1.0.0',
