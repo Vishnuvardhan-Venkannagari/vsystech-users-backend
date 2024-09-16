@@ -10,13 +10,13 @@ import pkgutil
 import importlib
 # sys.path.append("/Users/vishnureddy/Documents/MyProjects/vsystech-user-app/opt/backend/framework/")
 sys.path.append("/opt/vsystech-users-backend/backend/framework")
-import restapi
+# import restapi
 
 app = fastapi.FastAPI(version='1.0.0',
                       description=f"RestAPI for VSYSTECH Platform",
                       title="RestApi")
-package_dir = '/Users/vishnureddy/Documents/MyProjects/vsystech-user-app/opt/backend/application/routers'
-
+# package_dir = '/Users/vishnureddy/Documents/MyProjects/vsystech-user-app/opt/backend/application/routers'
+package_dir = '/opt/vsystech-users-backend/backend/application/routers'
 for module_info in pkgutil.iter_modules([str(package_dir)]):
     module = importlib.import_module(f'routers.{module_info.name}')
     if hasattr(module, 'router'):
