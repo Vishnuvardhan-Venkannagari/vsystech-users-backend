@@ -43,8 +43,8 @@ default_app = initialize_app(cred)
 
 
 # package_dir = os.getcwd() + "/application"
-package_dir = "/Users/vishnureddy/Documents/MyProjects/vsystech-user-app/opt/backend/application"
-
+# package_dir = "/Users/vishnureddy/Documents/MyProjects/vsystech-user-app/opt/backend/application"
+package_dir = "/opt/vsystech-users-backend/backend/application"
 sys.path.append(os.path.abspath(package_dir))
 @app.on_event("startup")
 def onStart():
@@ -56,7 +56,7 @@ def onStart():
 
 @app.middleware('http')
 async def authMiddleware(request: fastapi.Request, call_next):
-
+    print(request.url.path)
     if request.url.path in ['/docs', '/openapi.json', '/api/login', '/api/logout', '/ping', '/api/me', "/api/users/createUSerWithEmail", "/api/users/loginWithEmail"] :#+ framework.settings.noauth_urls:
         return await call_next(request)
     redirect_url = f'https://{request.base_url.hostname}/api/login'
