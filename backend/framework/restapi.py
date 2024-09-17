@@ -62,7 +62,7 @@ async def authMiddleware(request: fastapi.Request, call_next):
     if not request.headers.get('authtoken'):
         redirect_url = f'https://{request.base_url.hostname}/api/login'
         response = fastapi.responses.JSONResponse({'url': redirect_url}, 401)
-
+        return response
     return await call_next(request)   
 
 @app.middleware('http')
