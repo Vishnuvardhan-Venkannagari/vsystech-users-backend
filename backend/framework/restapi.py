@@ -14,7 +14,8 @@ import pkgutil
 import traceback
 from redispool import RedisModel
 # from fastapi.middleware.cors import CORSMiddleware
-from firebase_admin import credentials,auth,firestore, initialize_app
+from firebase_admin import credentials,firestore, initialize_app
+from firebase_admin import auth as fs_admin
 dir_path = os.path.dirname(os.path.realpath(__file__))
 import pyrebase
 
@@ -43,8 +44,8 @@ default_app = initialize_app(cred)
 
 
 package_dir = os.getcwd() + "/application"
-print(dir_path)
-print(package_dir)
+# print(dir_path)
+# print(package_dir)
 # package_dir = "/Users/vishnureddy/Documents/MyProjects/vsystech-user-app/opt/backend/application"
 # package_dir = "/opt/vsystech-users-backend/backend/application"
 sys.path.append(os.path.abspath(package_dir))
@@ -115,7 +116,7 @@ async def userLogin(data):
     return {"status": "login success", "token": token}
 
 async def authenticate(authtoken):
-    decoded_token = auth.verify_id_token(authtoken)
+    decoded_token = fs_admin.verify_id_token(authtoken)
     data = {}
     data["uid"] = decoded_token['uid']
     return {"status": "success", "data": data}
