@@ -12,11 +12,12 @@ import typing
 import importlib
 import pkgutil
 import traceback
+import pydantic
 from redispool import RedisModel
 # from fastapi.middleware.cors import CORSMiddleware
 # from firebase_admin import credentials,firestore, initialize_app
 # from firebase_admin import auth as fs_admin
-dir_path = os.path.dirname(os.path.realpath(__file__))
+# dir_path = os.path.dirname(os.path.realpath(__file__))
 import pyrebase
 
 app = fastapi.FastAPI(version='1.0.0',
@@ -59,7 +60,6 @@ def onStart():
 
 @app.middleware('http')
 async def authMiddleware(request: fastapi.Request, call_next):
-    print(request.url.path)
     if request.url.path in ['/docs', '/openapi.json', '/api/login', '/api/logout', '/ping', '/api/me', "/api/users/createUSerWithEmail", "/api/users/loginWithEmail"] :#+ framework.settings.noauth_urls:
         return await call_next(request)
     if not request.headers.get('authtoken'):
@@ -100,6 +100,18 @@ async def contextMiddleware(request: fastapi.Request, call_next):
             status_code=500,
             content={"detail": "An internal server error occurred.", "error": str(errFormat)}
         )
+class loginWithEmail(pydantic.BaseModel):
+    email: str
+    password: str
+
+@app.post("/loginWithEmail")
+async def loginWithEmail(data: loginWithEmail, response: fastapi.Response):
+    data = data.model_dump()
+    result =  await userLogin(data)
+    # response.headers["Authorization"] = f"Bearer {result['token']}"
+    # headers_dict = dict(response.headers.items())
+    print(result)
+    return result
 
 async def userLogin(data):
     if data.get("email", ""):
@@ -118,7 +130,6 @@ async def userLogin(data):
 async def authenticate(authtoken):
     user = firebase.auth().get_account_info(authtoken)
     uid = user['users'][0]['localId']  # Get the UID from the account info
-    print(uid)
     data = {"uid": uid}
     return {"status": "success", "data": data}
     # decoded_token = fs_admin.verify_id_token(authtoken)
