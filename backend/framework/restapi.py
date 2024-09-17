@@ -13,8 +13,8 @@ import importlib
 import pkgutil
 import traceback
 from redispool import RedisModel
-from fastapi.middleware.cors import CORSMiddleware
-# from firebase_admin import credentials,auth,firestore, initialize_app
+# from fastapi.middleware.cors import CORSMiddleware
+from firebase_admin import credentials,auth,firestore, initialize_app
 dir_path = os.path.dirname(os.path.realpath(__file__))
 import pyrebase
 
@@ -36,9 +36,9 @@ firebase = pyrebase.initialize_app(firebase_config)
 firebase_auth = firebase.auth()
 
 
-# cred_path = os.path.join(dir_path, "vsystech-users-firebase-adminsdk-w3tk9-f514a70a29.json")
-# cred = credentials.Certificate(cred_path)
-# default_app = initialize_app(cred)
+cred_path = os.path.join(dir_path + "/framework", "vsystech-users-firebase-adminsdk-w3tk9-f514a70a29.json")
+cred = credentials.Certificate(cred_path)
+default_app = initialize_app(cred)
 
 
 
@@ -109,7 +109,7 @@ async def userLogin(data):
             RedisModel().delete(user["localId"] + "_token")
         RedisModel().post(user["localId"] + "_token", token)
     if data.get("phoneNumber", ""):
-        user = auth.sign_in_with_email_and_password(data["email", data["password"]])
+        user = firebase.auth().sign_in_with_email_and_password(data["email", data["password"]])
         token = user["idToken"]
         RedisModel().hset(user.uid + "_token", 3600, token)
     return {"status": "login success", "token": token}
