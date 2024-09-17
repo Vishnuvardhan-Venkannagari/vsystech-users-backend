@@ -63,7 +63,7 @@ async def authMiddleware(request: fastapi.Request, call_next):
         redirect_url = f'https://{request.base_url.hostname}/api/login'
         response = fastapi.responses.JSONResponse({'url': redirect_url}, 401)
 
-    return call_next(request)    
+    return response    
 
 @app.middleware('http')
 async def contextMiddleware(request: fastapi.Request, call_next):
@@ -88,7 +88,8 @@ async def contextMiddleware(request: fastapi.Request, call_next):
         Exception error
         """
         # errFormat = error
-        errFormat = '''Error:
+        errFormat = error
+        # '''Error:
         # Stack Trace:
         # %s
         # ''' % (traceback.format_exc())
