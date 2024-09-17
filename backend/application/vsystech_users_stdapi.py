@@ -8,24 +8,26 @@ import sys
 import os
 import pkgutil
 import importlib
-# sys.path.append("/Users/vishnureddy/Documents/MyProjects/vsystech-user-app/opt/backend/framework/")
-sys.path.append("/opt/vsystech-users-backend/backend/framework")
-# import restapi
+import traceback
+sys.path.append("/Users/vishnureddy/Documents/MyProjects/vsystech-user-app/opt/backend/")
+import framework
+# sys.path.append("/opt/vsystech-users-backend/backend/framework")
+import restapi
 
-app = fastapi.FastAPI(version='1.0.0',
-                      description=f"RestAPI for VSYSTECH Platform",
-                      title="RestApi")
-# package_dir = '/Users/vishnureddy/Documents/MyProjects/vsystech-user-app/opt/backend/application/routers'
-package_dir = '/opt/vsystech-users-backend/backend/application/routers'
-for module_info in pkgutil.iter_modules([str(package_dir)]):
-    module = importlib.import_module(f'routers.{module_info.name}')
-    if hasattr(module, 'router'):
-        app.include_router(module.router)
+router = fastapi.APIRouter(prefix='')
+# app = fastapi.FastAPI(version='1.0.0',
+#                       description=f"RestAPI for VSYSTECH Platform",
+#                       title="RestApi")
+# package_dir = os.getcwd() #+ "/application"
+# sys.path.append(os.path.abspath(package_dir))
+# @app.on_event("startup")
+# def onStart():
+#     for module_info in pkgutil.iter_modules([str(package_dir)]):
+#         module = importlib.import_module(f'{module_info.name}')#routers.
+#         if hasattr(module, 'router'):
+#             app.include_router(module.router, prefix="/api")
 
-router = fastapi.APIRouter(prefix='/secure-data')
 
-@router.get("/")
+@router.get("/secure-data")
 async def secure_data():
     return {"status": "success", "msg": "This is a secured data"}
-
-app.include_router(router)

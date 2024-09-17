@@ -10,10 +10,11 @@ import httpx
 import base64
 import typing
 import importlib
+import pkgutil
+import traceback
 from redispool import RedisModel
 from fastapi.middleware.cors import CORSMiddleware
 from firebase_admin import credentials,auth,firestore, initialize_app
-# sys.path.append("/Users/vishnureddy/Documents/MyProjects/vsystech-user-app/opt/backend/framework")
 dir_path = os.path.dirname(os.path.realpath(__file__))
 import pyrebase
 
@@ -32,76 +33,86 @@ firebase_config = {
     "appId": "1:525115781661:web:46706dd6a4ab20712bccf4"
 }
 firebase = pyrebase.initialize_app(firebase_config)
+firebase_auth = firebase.auth()
+
+
 cred_path = os.path.join(dir_path, "vsystech-users-firebase-adminsdk-w3tk9-f514a70a29.json")
+print(cred_path)
 cred = credentials.Certificate(cred_path)
 default_app = initialize_app(cred)
+print(default_app)
 
-async def createInternalErrorMessage(errFormat):
+
+
+package_dir = os.getcwd() + "/application"
+
+sys.path.append(os.path.abspath(package_dir))
+@app.on_event("startup")
+def onStart():
+    for module_info in pkgutil.iter_modules([str(package_dir)]):
+        module = importlib.import_module(f'{module_info.name}')#routers.
+        if hasattr(module, 'router'):
+            app.include_router(module.router, prefix="/api")
+
+
+@app.middleware('http')
+async def authMiddleware(request: fastapi.Request, call_next):
+
+    if request.url.path in ['/docs', '/openapi.json', '/api/login', '/api/logout', '/ping', '/api/me', "/api/users/createUSerWithEmail", "/api/users/loginWithEmail"] :#+ framework.settings.noauth_urls:
+        return await call_next(request)
+    redirect_url = f'https://{request.base_url.hostname}/api/login'
+    response = fastapi.responses.JSONResponse({'url': redirect_url}, 401)
+
+    return response    
+
+@app.middleware('http')
+async def contextMiddleware(request: fastapi.Request, call_next):
+    data = {}
+    data['domain'] = request.base_url
+    data['oauth_redirect'] = f'{request.base_url}api/login'.replace('http://', 'https://')
+    authtoken = request.headers.get('authtoken')
+    if authtoken:
+        userdata = await authenticate(authtoken)
+        if userdata:
+            data["rpt"] = {"user_data": userdata}
     try:
-        id = str(uuid.uuid4()).replace("-", "")
-        # conn = await framework.redispool.get_redis_connection()
-        # await conn.setex("internalerror_" + id, 60, errFormat)
-        print(errFormat)
-        return True, id
-    except:
-        return False, ""
+        resp = await call_next(request)
+        response_body = b""
+        async for chunk in resp.body_iterator:
+            response_body += chunk
 
-# async def createSession(id_token):
-#     session = requests.Session()
-#     session.headers.update({
-#         "Authorization": f"Bearer {id_token}",
-#         "Content-Type": "application/json"
-#     })
-#     url = "http://127.0.0.1:8000/api/secure-data"
-#     response = session.get(url)
+        return fastapi.Response(content=response_body, status_code=resp.status_code, headers=dict(resp.headers))
 
-#     print(response.json())
-#     print(response.headers)
+    except Exception as error:
+        """
+        Exception error
+        """
+        # errFormat = error
+        errFormat = '''Error:
+        Stack Trace:
+        %s
+        ''' % (traceback.format_exc())
+        return fastapi.responses.JSONResponse(
+            status_code=500,
+            content={"detail": "An internal server error occurred.", "error": str(errFormat)}
+        )
 
 async def userLogin(data):
     if data.get("email", ""):
-        request = fastapi.Request
-        # password = data["password"]
         emai, password = data["email"], data["password"]
         user = firebase.auth().sign_in_with_email_and_password(emai, password)
         token = user["idToken"]
-        # print(user)
         if RedisModel().get(user["localId"] + "_token"):
             RedisModel().delete(user["localId"] + "_token")
         RedisModel().post(user["localId"] + "_token", token)
-        # print(request.headers.get("Authorization"))
-        # await createSession(token)
     if data.get("phoneNumber", ""):
         user = auth.sign_in_with_email_and_password(data["email", data["password"]])
         token = user["idToken"]
         RedisModel().hset(user.uid + "_token", 3600, token)
     return {"status": "login success", "token": token}
 
-async def authenticate(request: fastapi.Request):
-    authtoken = request.headers.get("authtoken")
+async def authenticate(authtoken):
     decoded_token = auth.verify_id_token(authtoken)
-    uid = decoded_token['uid']
-
-# @app.on_event("startup")
-# def onStart():
-#     for filename in glob.glob("**/**/*.py", recursive=True):
-#         print(filename)
-#         if filename.startswith("_"):
-#             continue
-#         modname = os.path.splitext(filename)[0].replace(os.sep, '.')
-#         # print("Loading:",modname)
-#         mod = importlib.import_module(modname)
-        
-#         # If a variable by name "roter" is defined load that directly
-#         # Else go through the module and if any of the variable is a router load that...
-#         symbol = getattr(mod, 'router', None)
-#         if isinstance(symbol, fastapi.APIRouter):
-#             app.include_router(symbol, prefix="/api")
-#         else:
-#             for attr in dir(mod):
-#                 if not attr.startswith("_"):
-#                     symbol = getattr(mod, attr)
-#                     if isinstance(symbol, fastapi.APIRouter):
-#                         # print("Loading module:", modname, " Route:",attr, [(x.path, x.name)  for x in symbol.routes])
-#                         app.include_router(symbol, prefix="/api")
-
+    data = {}
+    data["uid"] = decoded_token['uid']
+    return {"status": "success", "data": data}

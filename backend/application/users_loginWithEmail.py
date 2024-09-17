@@ -16,7 +16,7 @@ router = fastapi.APIRouter(prefix='/users')
 async def loginWithEmail(data: vsystech_users_models.loginWithEmail, response: fastapi.Response):
     data = data.model_dump()
     result =  await restapi.userLogin(data)
-    response.headers["Authorization"] = f"Bearer {result['token']}"
-    headers_dict = dict(response.headers.items())
-    print(headers_dict)
+    # response.headers["Authorization"] = f"Bearer {result['token']}"
+    # headers_dict = dict(response.headers.items())
+    print(result)
     return result
