@@ -104,16 +104,15 @@ class loginWithEmail(pydantic.BaseModel):
     email: str
     password: str
 
-@app.post("/loginWithEmail")
+@app.post("/api/loginWithEmail")
 async def loginWithEmail(data: loginWithEmail, response: fastapi.Response):
     data = data.model_dump()
-    result =  await userLogin(data)
-    # response.headers["Authorization"] = f"Bearer {result['token']}"
-    # headers_dict = dict(response.headers.items())
-    print(result)
-    return result
-
-async def userLogin(data):
+    # result =  await userLogin(data)
+    # # response.headers["Authorization"] = f"Bearer {result['token']}"
+    # # headers_dict = dict(response.headers.items())
+    # print(result)
+    # return result
+# async def userLogin(data):
     if data.get("email", ""):
         emai, password = data["email"], data["password"]
         user = firebase.auth().sign_in_with_email_and_password(emai, password)
