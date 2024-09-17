@@ -37,14 +37,13 @@ firebase_auth = firebase.auth()
 
 
 cred_path = os.path.join(dir_path, "vsystech-users-firebase-adminsdk-w3tk9-f514a70a29.json")
-print(cred_path)
 cred = credentials.Certificate(cred_path)
 default_app = initialize_app(cred)
-print(default_app)
 
 
 
-package_dir = os.getcwd() + "/application"
+# package_dir = os.getcwd() + "/application"
+package_dir = "/Users/vishnureddy/Documents/MyProjects/vsystech-user-app/opt/backend/application"
 
 sys.path.append(os.path.abspath(package_dir))
 @app.on_event("startup")
