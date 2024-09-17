@@ -10,6 +10,7 @@ import pkgutil
 import importlib
 import traceback
 sys.path.append(os.getcwd()+'/framework')
+print(os.getcwd()+'/framework')
 # sys.path.append("/Users/vishnureddy/Documents/MyProjects/vsystech-user-app/opt/backend/")
 import framework
 # sys.path.append("/opt/vsystech-users-backend/backend/framework")
