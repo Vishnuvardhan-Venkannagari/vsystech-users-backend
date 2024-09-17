@@ -42,9 +42,9 @@ default_app = initialize_app(cred)
 
 
 
-# package_dir = os.getcwd() + "/application"
+package_dir = os.getcwd() + "/application"
 # package_dir = "/Users/vishnureddy/Documents/MyProjects/vsystech-user-app/opt/backend/application"
-package_dir = "/opt/vsystech-users-backend/backend/application"
+# package_dir = "/opt/vsystech-users-backend/backend/application"
 sys.path.append(os.path.abspath(package_dir))
 @app.on_event("startup")
 def onStart():
