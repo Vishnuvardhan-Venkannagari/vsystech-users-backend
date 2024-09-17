@@ -87,10 +87,11 @@ async def contextMiddleware(request: fastapi.Request, call_next):
         Exception error
         """
         # errFormat = error
-        errFormat = '''Error:
-        Stack Trace:
-        %s
-        ''' % (traceback.format_exc())
+        errFormat = error
+        # '''Error:
+        # Stack Trace:
+        # %s
+        # ''' % (traceback.format_exc())
         return fastapi.responses.JSONResponse(
             status_code=500,
             content={"detail": "An internal server error occurred.", "error": str(errFormat)}
