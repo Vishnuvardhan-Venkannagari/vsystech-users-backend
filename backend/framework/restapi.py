@@ -14,8 +14,8 @@ import pkgutil
 import traceback
 from redispool import RedisModel
 # from fastapi.middleware.cors import CORSMiddleware
-from firebase_admin import credentials,firestore, initialize_app
-from firebase_admin import auth as fs_admin
+# from firebase_admin import credentials,firestore, initialize_app
+# from firebase_admin import auth as fs_admin
 dir_path = os.path.dirname(os.path.realpath(__file__))
 import pyrebase
 
@@ -37,9 +37,9 @@ firebase = pyrebase.initialize_app(firebase_config)
 firebase_auth = firebase.auth()
 
 
-cred_path = os.path.join(dir_path + "/framework", "vsystech-users-firebase-adminsdk-w3tk9-f514a70a29.json")
-cred = credentials.Certificate(cred_path)
-default_app = initialize_app(cred)
+# cred_path = os.path.join(dir_path + "/framework", "vsystech-users-firebase-adminsdk-w3tk9-f514a70a29.json")
+# cred = credentials.Certificate(cred_path)
+# default_app = initialize_app(cred)
 
 
 
@@ -116,7 +116,12 @@ async def userLogin(data):
     return {"status": "login success", "token": token}
 
 async def authenticate(authtoken):
-    decoded_token = fs_admin.verify_id_token(authtoken)
-    data = {}
-    data["uid"] = decoded_token['uid']
+    user = firebase.auth().get_account_info(authtoken)
+    uid = user['users'][0]['localId']  # Get the UID from the account info
+    print(uid)
+    data = {"uid": uid}
     return {"status": "success", "data": data}
+    # decoded_token = fs_admin.verify_id_token(authtoken)
+    # data = {}
+    # data["uid"] = decoded_token['uid']
+    # return {"status": "success", "data": data}
