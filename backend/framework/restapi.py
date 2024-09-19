@@ -13,11 +13,11 @@ import importlib
 import pkgutil
 import traceback
 import pydantic
-from redispool import RedisModel
-# from fastapi.middleware.cors import CORSMiddleware
+import contextvars
+import context
+from redispool import get_redis_connection
 # from firebase_admin import credentials,firestore, initialize_app
 # from firebase_admin import auth as fs_admin
-# dir_path = os.path.dirname(os.path.realpath(__file__))
 import pyrebase
 
 app = fastapi.FastAPI(version='1.0.0',
@@ -45,15 +45,13 @@ firebase_auth = firebase.auth()
 
 
 package_dir = os.getcwd() + "/application"
-# print(dir_path)
-# print(package_dir)
-# package_dir = "/Users/vishnureddy/Documents/MyProjects/vsystech-user-app/opt/backend/application"
-# package_dir = "/opt/vsystech-users-backend/backend/application"
 sys.path.append(os.path.abspath(package_dir))
+
 @app.on_event("startup")
 def onStart():
     for module_info in pkgutil.iter_modules([str(package_dir)]):
         module = importlib.import_module(f'{module_info.name}')#routers.
+        # print(hasattr(module, 'router'))
         if hasattr(module, 'router'):
             app.include_router(module.router, prefix="/api")
 
@@ -66,7 +64,25 @@ async def authMiddleware(request: fastapi.Request, call_next):
         redirect_url = f'https://{request.base_url.hostname}/api/login'
         response = fastapi.responses.JSONResponse({'url': redirect_url}, 401)
         return response
-    return await call_next(request)   
+    auth_user = context.context.get('auth_user', {})
+    if not auth_user:
+        response = fastapi.Response(None, 403)
+    else:
+        response: fastapi.responses.Response  = await call_next(request)   
+    return response
+
+async def authenticate(authtoken):
+    
+    redisIns = await get_redis_connection()
+    if await redisIns.exists(authtoken) and await redisIns.get(authtoken):
+        auth_user = json.loads(await redisIns.get(authtoken))
+        return auth_user
+    user = firebase.auth().get_account_info(auth_user)
+    uid = user['users'][0]['localId']  # Get the UID from the account info
+    auth_user = {"uid": uid}
+    await redisIns.setex(authtoken, 3600, json.dumps(auth_user))
+    return auth_user
+
 
 @app.middleware('http')
 async def contextMiddleware(request: fastapi.Request, call_next):
@@ -77,7 +93,9 @@ async def contextMiddleware(request: fastapi.Request, call_next):
     if authtoken:
         userdata = await authenticate(authtoken)
         if userdata:
-            data["rpt"] = {"user_data": userdata}
+            data["auth_user"] = {"user_data": userdata}
+            print(data)
+    _starlette_context_token: contextvars.Token = context._request_scope_context_storage.set(data)
     try:
         resp = await call_next(request)
         response_body = b""
@@ -91,15 +109,16 @@ async def contextMiddleware(request: fastapi.Request, call_next):
         Exception error
         """
         # errFormat = error
-        errFormat = error
-        # '''Error:
-        # Stack Trace:
-        # %s
-        # ''' % (traceback.format_exc())
+        errFormat = '''Error: 
+        Stack Trace:
+        %s
+        ''' % (traceback.format_exc())
+        print(errFormat)
         return fastapi.responses.JSONResponse(
             status_code=500,
             content={"detail": "An internal server error occurred.", "error": str(errFormat)}
         )
+    
 class loginWithEmail(pydantic.BaseModel):
     email: str
     password: str
@@ -107,31 +126,19 @@ class loginWithEmail(pydantic.BaseModel):
 @app.post("/api/loginWithEmail")
 async def loginWithEmail(data: loginWithEmail, response: fastapi.Response):
     data = data.model_dump()
-    # result =  await userLogin(data)
-    # # response.headers["Authorization"] = f"Bearer {result['token']}"
-    # # headers_dict = dict(response.headers.items())
-    # print(result)
-    # return result
-# async def userLogin(data):
+    rcon = await get_redis_connection()
     if data.get("email", ""):
         emai, password = data["email"], data["password"]
         user = firebase.auth().sign_in_with_email_and_password(emai, password)
-        token = user["idToken"]
-        if RedisModel().get(user["localId"] + "_token"):
-            RedisModel().delete(user["localId"] + "_token")
-        RedisModel().post(user["localId"] + "_token", token)
+        authtoken = user["idToken"]
+        auth_user = {"uid": user["localId"]}
+        pendingseconds = 3600
+        if not await rcon.exists(authtoken) and not await rcon.get(authtoken):
+            await rcon.setex(authtoken, pendingseconds, json.dumps(auth_user))
     if data.get("phoneNumber", ""):
         user = firebase.auth().sign_in_with_email_and_password(data["email", data["password"]])
-        token = user["idToken"]
-        RedisModel().hset(user.uid + "_token", 3600, token)
-    return {"status": "login success", "token": token}
+        authtoken = user["idToken"]
+        auth_user = {"uid": user["localId"]}
+        await rcon.setex(authtoken, pendingseconds, json.dumps(auth_user))
+    return {"status": "login success", "token": authtoken}
 
-async def authenticate(authtoken):
-    user = firebase.auth().get_account_info(authtoken)
-    uid = user['users'][0]['localId']  # Get the UID from the account info
-    data = {"uid": uid}
-    return {"status": "success", "data": data}
-    # decoded_token = fs_admin.verify_id_token(authtoken)
-    # data = {}
-    # data["uid"] = decoded_token['uid']
-    # return {"status": "success", "data": data}
