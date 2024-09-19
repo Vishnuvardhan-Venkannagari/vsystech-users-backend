@@ -26,6 +26,9 @@ fastapi
 email-validator
 elasticsearch[async]==7.13.1
 uvicorn
+aioredis
+contextvars
+json
 redis
 pydantic[dotenv]
 pyrebase4
