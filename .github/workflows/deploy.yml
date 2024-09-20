@@ -21,10 +21,10 @@ jobs:
           python-version: '3.x'  # Set to your desired Python version
 
       # Step 3: Install dependencies
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install -r requirements.txt
+      #- name: Install dependencies
+      #  run: |
+      #    python -m pip install --upgrade pip
+      #    python -m pip install -r requirements.txt
 
       # Step 4: Deploy the code via SSH
       - name: Deploy to Server
@@ -35,6 +35,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}  # Add the private SSH key as a secret
           port: ${{ secrets.SSH_PORT }}  # Optional, set this if not using default SSH port
           script: |
-            cd /home/ubuntu  # Navigate to your server directory
+            cd /root/vsystech-users-backend/backend  # Navigate to your server directory
             bash codeupdate.sh  # Run your update script
             bash run.sh  # Execute run.sh
