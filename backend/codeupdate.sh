@@ -23,7 +23,7 @@ updateCode() {
         mkdir /opt
     fi
     rsync -aSP $BASEDIR/framework/ /opt/backend/framework/ --delete
-    rsync -aSP $BASEDIR/application /opt/backend/application/ --delete --exclude .env
+    rsync -aSP $BASEDIR/application/ /opt/backend/application/ --delete --exclude .env
     # rsync -aSP $BASEDIR/opt/socialswag/adminportal/ /opt/socialswag/adminportal/ --delete --exclude .env
    
     # if [ ! -f /opt/socialswag/integrations/.env ]; then
