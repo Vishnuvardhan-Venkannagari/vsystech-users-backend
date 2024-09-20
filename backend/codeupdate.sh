@@ -1,10 +1,10 @@
 #!/bin/bash
 cwd=`pwd`
-BASEDIR=$cwd/
+BASEDIR=`pwd`
 PYTHON_PATH="/opt/env/bin/python"
 
 prepareforUpdate() {
-    cd $BASEDIR/vsystech-users-backend/backend
+    cd $BASEDIR
     $PYTHON_PATH -m pip install -r requirements.txt
     if [ ! -d /var/log/application/ ]; then
         mkdir -p /var/log/application/
