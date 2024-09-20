@@ -16,8 +16,4 @@ router = fastapi.APIRouter(prefix='/users')
 
 @router.post('/testAPI')
 async def testAPI():
-    # print(upload_to_s3bucket())
-    # st, msg = await upload_to_s3bucket()
-    # print(msg)
-    # print(restapi.set_user)
     return {"status": "success", "msg": "File uploaded"}
