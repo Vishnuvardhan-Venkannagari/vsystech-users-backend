@@ -31,10 +31,10 @@ jobs:
         uses: appleboy/ssh-action@v0.1.8
         with:
           host: ${{ secrets.SERVER_HOST }}  # Add the host as a secret in GitHub Actions
-          username: ${{ secrets.SERVER_USER }}  # Add the server username as a secret
+          username: ubuntu  # Add the server username as a secret
           key: ${{ secrets.SSH_PRIVATE_KEY }}  # Add the private SSH key as a secret
-          port: ${{ secrets.SSH_PORT }}  # Optional, set this if not using default SSH port
+          port: 22  # Optional, set this if not using default SSH port
           script: |
             cd /root/vsystech-users-backend/backend  # Navigate to your server directory
             bash codeupdate.sh  # Run your update script
-            bash run.sh  # Execute run.sh
+            
