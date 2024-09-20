@@ -15,9 +15,6 @@ prepareforUpdate() {
     if [ ! -d /opt/backend/application ]; then
           mkdir -p /opt/backend/application
     fi
-    if [ ! -d /opt/backend/adminportal ]; then
-          mkdir -p /opt/socialswag/adminportal
-    fi
 }
 
 updateCode() {
@@ -38,7 +35,7 @@ updateCode() {
 }
 
 configureframework() {
-    cd /opt/backend/framework
+    cd /opt/backend/framework/
     $PYTHON_PATH -m pip install -e .
     $PYTHON_PATH -m pip install .
 }
