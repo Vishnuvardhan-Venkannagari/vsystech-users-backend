@@ -36,5 +36,5 @@ jobs:
           port: 22  # Optional, set this if not using default SSH port
           script: |
             cd /root/vsystech-users-backend/backend  # Navigate to your server directory
-            bash codeupdate.sh  # Run your update script
+            bash codeupdate.sh  
             
