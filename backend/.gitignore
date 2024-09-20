@@ -13,3 +13,8 @@ env/
 
 # Ignore log files
 *.log
+
+#Ignore Ds_store
+.DS_Store
+**/.DS_Store
+**/**/.DS_Store
