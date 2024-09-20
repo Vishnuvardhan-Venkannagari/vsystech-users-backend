@@ -41,21 +41,6 @@ configureframework() {
 }
 
 restartServices() {
-    # for id in {8090..8099..1}
-    # do
-    #     echo "Restarting socialswagapi@$id.service"
-    #     systemctl enable socialswagapi@$id.service
-    #     systemctl restart socialswagapi@$id.service
-    #     sleep 3
-    # done
-    # for id in {8070..8079..1}
-    # do
-    #     echo "Restarting adminportalapi@$id.service"
-    #     systemctl enable adminportalapi@$id.service
-    #     systemctl restart adminportalapi@$id.service
-    #     sleep 3
-    # done
-    # sleep 5
     systemctl enable backend.service
     systemctl restart backend.service
     sleep 5
