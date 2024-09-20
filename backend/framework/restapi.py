@@ -49,6 +49,7 @@ sys.path.append(os.path.abspath(package_dir))
 
 @app.on_event("startup")
 def onStart():
+    print("Onstart", package_dir)
     for module_info in pkgutil.iter_modules([str(package_dir)]):
         module = importlib.import_module(f'{module_info.name}')#routers.
         # print(hasattr(module, 'router'))
