@@ -18,7 +18,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.x'  # Set to your desired Python version
+          python-version: '3.x'  
 
       # Step 3: Install dependencies
       #- name: Install dependencies
@@ -35,6 +35,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}  # Add the private SSH key as a secret
           port: 22  # Optional, set this if not using default SSH port
           script: |
-            cd /root/vsystech-users-backend/backend  # Navigate to your server directory
-            bash codeupdate.sh  # Run your update script
+            cd /home/ubuntu/vsystech-users-backend/backend || exit 1
+           
+            bash codeupdate.sh || exit 1 
             
