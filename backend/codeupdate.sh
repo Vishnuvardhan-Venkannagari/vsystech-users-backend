@@ -5,7 +5,7 @@ PYTHON_PATH="/opt/env/bin/python"
 
 prepareforUpdate() {
     cd $BASEDIR
-    git pull origin main
+    git pull origin dev
     $PYTHON_PATH -m pip install -r requirements.txt
     if [ ! -d /var/log/application/ ]; then
         mkdir -p /var/log/application/
