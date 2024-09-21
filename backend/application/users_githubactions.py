@@ -16,4 +16,4 @@ router = fastapi.APIRouter(prefix='/users')
 
 @router.get('/githubActionsTest')
 async def githubActionsTest():
-    return {"status": "success", "msg": "Git actions working"}
+    return {"status": "success", "data": "Git actions working"}
