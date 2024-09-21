@@ -36,6 +36,6 @@ jobs:
           port: 22  # Optional, set this if not using default SSH port
           script: |
             cd /home/ubuntu/vsystech-users-backend/backend || exit 1
-            chmod +x codeupdate.sh || exit 1
+           
             bash codeupdate.sh || exit 1 
             
