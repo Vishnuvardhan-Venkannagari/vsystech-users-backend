@@ -42,8 +42,8 @@ configureframework() {
 }
 
 restartServices() {
-    systemctl enable backend.service
-    systemctl restart backend.service
+    sudo systemctl enable backend.service
+    sudo systemctl restart backend.service
     sleep 5
 }
 
