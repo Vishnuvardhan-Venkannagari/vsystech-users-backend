@@ -14,6 +14,6 @@ import restapi
 
 router = fastapi.APIRouter(prefix='/users')
 
-@router.post('/githubActionsTest')
+@router.get('/githubActionsTest')
 async def githubActionsTest():
-    return {"status": "success", "msg": "File uploaded"}
+    return {"status": "success", "msg": "Git actions working"}
