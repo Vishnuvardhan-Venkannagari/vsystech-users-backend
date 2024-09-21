@@ -35,7 +35,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}  # Add the private SSH key as a secret
           port: 22  # Optional, set this if not using default SSH port
           script: |
-            cd /home/ubuntu/vsystech-users-backend/backend || exit 1
+            cd /root/vsystech-users-backend/backend || exit 1
             chmod +x codeupdate.sh || exit 1
             bash codeupdate.sh || exit 1 
             
