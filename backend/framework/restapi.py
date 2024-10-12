@@ -78,7 +78,7 @@ async def authenticate(authtoken):
     if await redisIns.exists(authtoken) and await redisIns.get(authtoken):
         auth_user = json.loads(await redisIns.get(authtoken))
         return auth_user
-    user = firebase.auth().get_account_info(auth_user)
+    user = firebase.auth().get_account_info(authtoken)
     uid = user['users'][0]['localId']  # Get the UID from the account info
     auth_user = {"uid": uid}
     await redisIns.setex(authtoken, 3600, json.dumps(auth_user))
