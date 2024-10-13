@@ -26,10 +26,10 @@ app = fastapi.FastAPI(version='1.0.0',
                       title="RestApi")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # Change this to your frontend URL
+    allow_origins=["http://localhost:5173"],  # Your frontend URL
     allow_credentials=True,
-    allow_methods=["*"],  # You can restrict to specific methods if needed
-    allow_headers=["*"],  # You can restrict to specific headers if needed
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all headers
 )
 
 firebase_config = {
