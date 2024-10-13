@@ -16,6 +16,7 @@ import pydantic
 import contextvars
 import context
 from redispool import get_redis_connection
+from fastapi.middleware.cors import CORSMiddleware
 # from firebase_admin import credentials,firestore, initialize_app
 # from firebase_admin import auth as fs_admin
 import pyrebase
@@ -23,7 +24,13 @@ import pyrebase
 app = fastapi.FastAPI(version='1.0.0',
                       description=f"RestAPI for VSYSTECH Platform",
                       title="RestApi")
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],  # Change this to your frontend URL
+    allow_credentials=True,
+    allow_methods=["*"],  # You can restrict to specific methods if needed
+    allow_headers=["*"],  # You can restrict to specific headers if needed
+)
 
 firebase_config = {
     "apiKey": "AIzaSyCKc8gJG-6MP5aU3Hme7hSVdkziP6nGlo4",
