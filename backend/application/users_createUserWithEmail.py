@@ -20,8 +20,8 @@ db = firebase.database()
 
 
 router = fastapi.APIRouter(prefix='/users')
-@router.post("/createUSerWithEmail")
-async def createUSerWithEmail(data: vsystech_users_models.Users):
+@router.post("/createUSer")
+async def createUSer(data: vsystech_users_models.Users):
     data = data.model_dump()
     password = "password"
     email = data.get("email")

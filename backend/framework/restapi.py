@@ -127,12 +127,12 @@ async def contextMiddleware(request: fastapi.Request, call_next):
             content={"detail": "An internal server error occurred.", "error": str(errFormat)}
         )
     
-class loginWithEmail(pydantic.BaseModel):
+class logInData(pydantic.BaseModel):
     email: str
     password: str
 
-@app.post("/api/loginWithEmail")
-async def loginWithEmail(data: loginWithEmail, response: fastapi.Response):
+@app.post("/api/logIn")
+async def logIn(data: logInData, response: fastapi.Response):
     data = data.model_dump()
     rcon = await get_redis_connection()
     if data.get("email", ""):
