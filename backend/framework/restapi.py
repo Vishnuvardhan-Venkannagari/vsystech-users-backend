@@ -131,7 +131,7 @@ class logInData(pydantic.BaseModel):
     email: str
     password: str
 
-@app.post("/api/logIn")
+@app.post("/api/login")
 async def logIn(data: logInData, response: fastapi.Response):
     data = data.model_dump()
     rcon = await get_redis_connection()
