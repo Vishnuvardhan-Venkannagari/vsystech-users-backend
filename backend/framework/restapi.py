@@ -26,7 +26,7 @@ app = fastapi.FastAPI(version='1.0.0',
                       title="RestApi")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"] ,  # Your frontend URL
+    allow_origins=["http://localhost:5173"] ,  # Your frontend URL
     allow_credentials=True,
     allow_methods=["*"],  # Allow all HTTP methods
     allow_headers=["*"],  # Allow all headers
@@ -66,7 +66,7 @@ def onStart():
 
 @app.middleware('http')
 async def authMiddleware(request: fastapi.Request, call_next):
-    if request.url.path in ['/docs', '/openapi.json', '/api/login', '/api/logout', '/ping', '/api/me', "/api/users/createUSerWithEmail", "/api/loginWithEmail"] :#+ framework.settings.noauth_urls:
+    if request.url.path in ['/docs', '/docs/', '/openapi.json', '/api/login', '/api/logout', '/ping', '/api/me', "/api/users/createUSerWithEmail", "/api/loginWithEmail"] :#+ framework.settings.noauth_urls:
         return await call_next(request)
     if not request.headers.get('authtoken'):
         redirect_url = f'https://{request.base_url.hostname}/api/login'
