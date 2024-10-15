@@ -23,6 +23,7 @@ import pyrebase
 
 app = fastapi.FastAPI(version='1.0.0',
                       description=f"RestAPI for VSYSTECH Platform",
+                      openapi_url="/openapi.json",
                       title="RestApi")
 app.add_middleware(
     CORSMiddleware,
