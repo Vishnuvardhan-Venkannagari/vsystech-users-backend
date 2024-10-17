@@ -10,7 +10,7 @@ import context
 
 
 
-router = fastapi.APIRouter(prefix='/users')
+router = fastapi.APIRouter(prefix='/users',  tags=['Users'])
 
 @router.post('/uploadProfile')
 async def uploadProfile():

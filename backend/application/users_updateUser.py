@@ -9,12 +9,13 @@ import os
 # import restapi
 sys.path.append(os.getcwd() + "/framework")
 import restapi
+from vsystech_users_models import Users
 
 
 
-router = fastapi.APIRouter(prefix='/users')
+router = fastapi.APIRouter(prefix='/users',  tags=['Users'])
 
-@router.post('/updateUser')
+@router.post('/updateUser' ,response_model=Users)
 async def updateUser():
     # print(upload_to_s3bucket())
     # st, msg = await upload_to_s3bucket()

@@ -44,7 +44,7 @@ firebase_config = {
 }
 firebase = pyrebase.initialize_app(firebase_config)
 firebase_auth = firebase.auth()
-
+db = firebase.database()
 
 # cred_path = os.path.join(dir_path + "/framework", "vsystech-users-firebase-adminsdk-w3tk9-f514a70a29.json")
 # cred = credentials.Certificate(cred_path)
@@ -67,7 +67,7 @@ def onStart():
 
 @app.middleware('http')
 async def authMiddleware(request: fastapi.Request, call_next):
-    if request.url.path in ['/docs', '/docs/', '/openapi.json', '/api/login', "/api/products", '/api/logout', '/ping', '/api/me', "/api/users/createUser", "/api/loginWithEmail"] :#+ framework.settings.noauth_urls:
+    if request.url.path in ['/docs', '/openapi.json', '/api/login', '/ping', "/api/me", "/api/users/createUser"] :#+ framework.settings.noauth_urls:
         return await call_next(request)
     if not request.headers.get('authtoken'):
         redirect_url = f'https://{request.base_url.hostname}/api/login'
@@ -102,8 +102,19 @@ async def contextMiddleware(request: fastapi.Request, call_next):
     if authtoken:
         userdata = await authenticate(authtoken)
         if userdata:
-            data["auth_user"] = {"user_data": userdata}
-            print(data)
+            rcon = await get_redis_connection()
+            if not await rcon.exists(authtoken) and not await rcon.get(authtoken):
+                user = db.child("users").child(userdata["uid"]).get(authtoken)
+                if not user.each():
+                    redirect_url = f'https://{request.base_url.hostname}/api/login'
+                    response = fastapi.responses.JSONResponse({'url': redirect_url}, 401)
+                    return response
+                user = dict(user.val())
+                data["auth_user"] = {"user_data": user}
+            else:
+                user_data = await rcon.get(authtoken)
+                user = json.loads(user_data)
+                data["auth_user"] = {"user_data": user}
     _starlette_context_token: contextvars.Token = context._request_scope_context_storage.set(data)
     try:
         resp = await call_next(request)
@@ -140,8 +151,14 @@ async def logIn(data: logInData, response: fastapi.Response):
         emai, password = data["email"], data["password"]
         user = firebase.auth().sign_in_with_email_and_password(emai, password)
         authtoken = user["idToken"]
-        auth_user = {"uid": user["localId"]}
+        # auth_user = {"uid": user["localId"]}
         pendingseconds = 3600
+        user = db.child("users").child(user["localId"]).get(authtoken)
+        if not user.each():
+            redirect_url = f'https://{request.base_url.hostname}/api/login'
+            response = fastapi.responses.JSONResponse({'url': redirect_url}, 401)
+            return response
+        auth_user = dict(user.val())
         if not await rcon.exists(authtoken) and not await rcon.get(authtoken):
             await rcon.setex(authtoken, pendingseconds, json.dumps(auth_user))
     if data.get("phoneNumber", ""):
@@ -151,3 +168,33 @@ async def logIn(data: logInData, response: fastapi.Response):
         await rcon.setex(authtoken, pendingseconds, json.dumps(auth_user))
     return {"status": "login success", "token": authtoken}
 
+@app.get("/api/me")
+async def me(request: fastapi.Request):
+    auth_user = context.context.get('auth_user', {})
+    if auth_user.get("user_data", {}):
+        dob_epoch = int(auth_user.get("user_data", {}).get("dob", ""))
+        if 0 < dob_epoch < 32503680000:  # 32503680000 is the timestamp for year 9999
+            dob = datetime.datetime.strftime(
+                datetime.datetime.fromtimestamp(dob_epoch),
+                "%m-%d-%Y"
+            )
+        else:
+            dob = None  # Handle invalid dob as needed
+
+        me = {
+            'fullName': auth_user.get("user_data", {}).get('name', '-'),
+            'roles': auth_user.get("user_data", {}).get('roles', []),#[role for role, assigned in rpt.get("user_data", {}).get('roles', {}).items() if assigned],
+            'email': auth_user.get("user_data", {}).get('email', '-'),
+            "used_id": auth_user.get("user_data", {}).get("user_id", ""),
+            "country": auth_user.get("user_data", {}).get("country", ""),
+            "created_time": datetime.datetime.strftime(datetime.datetime.fromtimestamp(int(auth_user.get("user_data", {}).get("created_time", ""))), "%m-%d-%Y"),
+            "dob": dob,
+            "phone_number":auth_user.get("user_data", {}).get("phone_number", ""),
+            "photo_url": auth_user.get("user_data", {}).get("photo_url", ""),
+            "state": auth_user.get("user_data", {}).get("state", ""),
+              } #"permissions": await get_permission()
+    else:
+        redirect_url = f"https://{request.base_url.hostname}/login"
+        response = fastapi.responses.JSONResponse({'url': redirect_url}, 401)
+        return response
+    return me

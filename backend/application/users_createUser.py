@@ -13,14 +13,14 @@ sys.path.append(os.getcwd() + "framework/")
 import restapi
 import pyrebase
 from restapi import firebase
-
+from vsystech_users_models import Users
 auth = firebase.auth()
 db = firebase.database()
 
 
 
-router = fastapi.APIRouter(prefix='/users')
-@router.post("/createUser")
+router = fastapi.APIRouter(prefix='/users',  tags=['Users'])
+@router.post("/createUser", response_model=Users)
 async def createUser(data: vsystech_users_models.Users):
     data = data.model_dump()
     password = "password"
