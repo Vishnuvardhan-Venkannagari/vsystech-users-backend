@@ -57,7 +57,7 @@ sys.path.append(os.path.abspath(package_dir))
 
 @app.on_event("startup")
 def onStart():
-    print("Onstart", package_dir)
+    # print("Onstart", package_dir)
     for module_info in pkgutil.iter_modules([str(package_dir)]):
         module = importlib.import_module(f'{module_info.name}')#routers.
         # print(hasattr(module, 'router'))
@@ -67,7 +67,7 @@ def onStart():
 
 @app.middleware('http')
 async def authMiddleware(request: fastapi.Request, call_next):
-    if request.url.path in ['/docs', '/docs/', '/openapi.json', '/api/login', '/api/logout', '/ping', '/api/me', "/api/users/createUser", "/api/loginWithEmail"] :#+ framework.settings.noauth_urls:
+    if request.url.path in ['/docs', '/docs/', '/openapi.json', '/api/login', "/api/products", '/api/logout', '/ping', '/api/me', "/api/users/createUser", "/api/loginWithEmail"] :#+ framework.settings.noauth_urls:
         return await call_next(request)
     if not request.headers.get('authtoken'):
         redirect_url = f'https://{request.base_url.hostname}/api/login'

@@ -14,6 +14,7 @@ sys.path.append(os.getcwd()+'/framework')
 import framework
 # sys.path.append("/opt/vsystech-users-backend/backend/framework")
 import restapi
+from vsystech_users_models import *
 
 router = fastapi.APIRouter(prefix='')
 # app = fastapi.FastAPI(version='1.0.0',
@@ -29,6 +30,22 @@ router = fastapi.APIRouter(prefix='')
 #             app.include_router(module.router, prefix="/api")
 
 
-@router.get("/secure-data")
-async def secure_data():
-    return {"status": "success", "msg": "This is a secured data"}
+# @router.get("/secure-data")
+# async def secure_data():
+#     return {"status": "success", "msg": "This is a secured data"}
+
+# router = fastapi.APIRouter(prefix='/users')
+
+@router.get('/products', response_model=ProductsResponse, tags=['Products'])
+async def get_all(response: fastapi.Response, params = fastapi.Depends(framework.queryparams.QueryParams)):
+    if params.download:
+        response.headers['Content-Disposition'] = f'attachment; filename="reviews.html"'
+    return await Products.get_all(params)
+
+@router.get('/products/{id}', response_model=Products, tags=['Products'])
+async def get(id: str):
+    return await Products.get(id)
+
+@router.post('/products', response_model=Products, tags=['Products'])
+async def create(inputObj: Products):
+    return await Products.create(inputObj)
