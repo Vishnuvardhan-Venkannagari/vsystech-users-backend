@@ -32,6 +32,7 @@ class Products(mongomodel.MongoModel):
     description: typing.Optional[str] = pydantic.Field(**{})
     short_description: typing.Optional[str] = pydantic.Field(**{})
     price: typing.Optional[int] = pydantic.Field(**{})
+    img_url: typing.Optional[int] = pydantic.Field(**{})
     
     class Config:
         db_collection = 'vsystech'
