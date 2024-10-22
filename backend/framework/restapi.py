@@ -27,10 +27,10 @@ app = fastapi.FastAPI(version='1.0.0',
                       title="RestApi")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"] ,  # Your frontend URL
+    allow_origins=["http://localhost:5173", "http://localhost:3000"],  # Add other necessary origins
     allow_credentials=True,
-    allow_methods=["*"],  # Allow all HTTP methods
-    allow_headers=["*"],  # Allow all headers
+    allow_methods=["*"],  # Ensure all methods (GET, POST, etc.) are allowed
+    allow_headers=["*"],  # Ensure all headers (including 'authtoken') are allowed
 )
 
 firebase_config = {
@@ -64,6 +64,14 @@ def onStart():
         if hasattr(module, 'router'):
             app.include_router(module.router, prefix="/api")
 
+@app.options("/{path:path}")
+async def options_handler():
+    return fastapi.Response(headers={
+        'Access-Control-Allow-Origin': 'http://localhost:5173',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'authtoken, Content-Type',
+        'Access-Control-Allow-Credentials': 'true'
+})
 
 @app.middleware('http')
 async def authMiddleware(request: fastapi.Request, call_next):
@@ -79,6 +87,7 @@ async def authMiddleware(request: fastapi.Request, call_next):
     else:
         response: fastapi.responses.Response  = await call_next(request)   
     return response
+
 
 async def authenticate(authtoken):
     
@@ -195,6 +204,6 @@ async def me(request: fastapi.Request):
               } #"permissions": await get_permission()
     else:
         redirect_url = f"https://{request.base_url.hostname}/login"
-        response = fastapi.responses.JSONResponse({'url': redirect_url}, 401)
+        response = fastapi.responses.JSONResponse({'url': redirect_url}, 403)
         return response
     return me
