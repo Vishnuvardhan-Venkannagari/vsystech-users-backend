@@ -70,7 +70,6 @@ class BaseMongoModel(pydantic.BaseModel):
     async def create(self):
         try:
             data = self.to_mongo(exclude_unset=False, exclude_none=True)
-            print(data)
             data['c'] = data['u'] = datetime.utcnow()
             data['tid'] = bson.ObjectId()
             data["id"] = data["tid"]
@@ -114,7 +113,7 @@ class BaseMongoModel(pydantic.BaseModel):
         cursor.limit(params.limit)
         data = await cursor.to_list(length=None)
         resp["total"] = await cursor.collection.count_documents(**mongoquery)
-        resp["current"] = len(data)
+        resp["count"] = len(data)
         for index, rec in enumerate(data):
             data[index]['tid'] = str(data[index]['tid'])
             data[index]['_id'] = str(data[index]['_id'])
