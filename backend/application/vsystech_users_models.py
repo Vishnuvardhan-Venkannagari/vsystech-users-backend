@@ -20,6 +20,14 @@ class Users(pydantic.BaseModel):
     dob: typing.Optional[str]
     state: typing.Optional[str]
 
+class CreateUsers(pydantic.BaseModel):
+    name: str
+    email: str
+    phoneNumber: str
+    password: str
+    profilePicture: typing.Optional[str]
+    dob: typing.Optional[str]
+    state: typing.Optional[str]
 
 class loginWithEmail(pydantic.BaseModel):
     email: str

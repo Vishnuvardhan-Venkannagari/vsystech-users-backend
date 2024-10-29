@@ -14,21 +14,21 @@ import restapi
 import pyrebase
 from restapi import firebase
 from vsystech_users_models import Users
-auth = firebase.auth()
-db = firebase.database()
+import pyrebase
+# auth = restapi.firebase_auth.auth()
+# db = firebase.database()
 
 
 
 router = fastapi.APIRouter(prefix='/users',  tags=['Users'])
-@router.post("/createUser", response_model=Users)
-async def createUser(data: vsystech_users_models.Users):
+@router.post("/createUser") #, response_model=Users
+async def createUser(data: vsystech_users_models.CreateUsers):
     data = data.model_dump()
     password = "password"
     email = data.get("email")
     name = data.get("name")
     dob_str = data.get("dob")
-    user = auth.create_user_with_email_and_password(email, password)
-
+    user = restapi.firebase_auth.create_user_with_email_and_password(email, password)
     user_id = user['localId']
     dob = datetime.datetime.strptime(dob_str, '%d-%m-%Y')
     epoch_dob = dob.timestamp() * 1000
@@ -48,9 +48,8 @@ async def createUser(data: vsystech_users_models.Users):
             "photo_url": data.get("photo_url", ""),
             "created_time": created_time,
         }
-    print(db.child("users").child(user_id).set(user_data))
     # db = firestore.client()
     # db.collection('users').document(user_id).set(user_data)
-    return {"status": "success", "result": user_id}
+    return {"status": "success", "data": {"user_data": restapi.db.child("users").child(user_id).set(user_data), "authtoken": user["idToken"]}}
     
     
