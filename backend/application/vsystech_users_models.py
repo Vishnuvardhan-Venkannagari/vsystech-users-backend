@@ -13,21 +13,35 @@ import mongomodel
 
 class Users(pydantic.BaseModel):
     uid:  str
-    name: typing.Optional[str]
-    email: typing.Optional[str]
+    firstName: str
+    lastName: str
+    email: str
+    phoneNumber: typing.Optional[str]
+    gender: typing.Optional[str]
+    profilePicture: typing.Optional[str]
+    dob: typing.Optional[str]
+    state: typing.Optional[str]
+    country: typing.Optional[str]
+
+class CreateUsers(pydantic.BaseModel):
+    firstName: str
+    lastName: str
+    email: str
+    password: str
     phoneNumber: typing.Optional[str]
     profilePicture: typing.Optional[str]
     dob: typing.Optional[str]
     state: typing.Optional[str]
 
-class CreateUsers(pydantic.BaseModel):
-    name: str
-    email: str
-    phoneNumber: str
-    password: str
+class UpdateUsers(pydantic.BaseModel):
+    uid:  str
+    firstName: typing.Optional[str]
+    lastName: typing.Optional[str]    
+    gender: typing.Optional[str]
     profilePicture: typing.Optional[str]
     dob: typing.Optional[str]
     state: typing.Optional[str]
+    country: typing.Optional[str]
 
 class loginWithEmail(pydantic.BaseModel):
     email: str

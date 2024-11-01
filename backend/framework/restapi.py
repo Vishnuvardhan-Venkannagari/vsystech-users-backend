@@ -182,26 +182,27 @@ async def me(request: fastapi.Request):
     auth_user = context.context.get('auth_user', {})
     if auth_user.get("user_data", {}):
         dob_epoch = int(auth_user.get("user_data", {}).get("dob", ""))
-        if 0 < dob_epoch < 32503680000:  # 32503680000 is the timestamp for year 9999
-            dob = datetime.datetime.strftime(
-                datetime.datetime.fromtimestamp(dob_epoch),
-                "%m-%d-%Y"
-            )
-        else:
-            dob = None  # Handle invalid dob as needed
+        # if 0 < dob_epoch < 32503680000:  # 32503680000 is the timestamp for year 9999
+        #     dob = datetime.datetime.strftime(
+        #         datetime.datetime.fromtimestamp(dob_epoch),
+        #         "%m-%d-%Y"
+        #     )
+        # else:
+        #     dob = None  # Handle invalid dob as needed
 
         me = {
-            'fullName': auth_user.get("user_data", {}).get('name', '-'),
+            'firstName': auth_user.get("user_data", {}).get('firstName', '-'),
+            'lastName': auth_user.get("user_data", {}).get('lastName', '-'),
             'roles': auth_user.get("user_data", {}).get('roles', []),#[role for role, assigned in rpt.get("user_data", {}).get('roles', {}).items() if assigned],
             'email': auth_user.get("user_data", {}).get('email', '-'),
             "used_id": auth_user.get("user_data", {}).get("user_id", ""),
             "country": auth_user.get("user_data", {}).get("country", ""),
             "created_time": datetime.datetime.strftime(datetime.datetime.fromtimestamp(int(auth_user.get("user_data", {}).get("created_time", ""))), "%m-%d-%Y"),
-            "dob": dob,
+            "dob": auth_user.get("user_data", {}).get('dob', ""),
             "phone_number":auth_user.get("user_data", {}).get("phone_number", ""),
             "photo_url": auth_user.get("user_data", {}).get("photo_url", ""),
             "state": auth_user.get("user_data", {}).get("state", ""),
-              } #"permissions": await get_permission()
+            } #"permissions": await get_permission()
     else:
         redirect_url = f"https://{request.base_url.hostname}/login"
         response = fastapi.responses.JSONResponse({'url': redirect_url}, 403)

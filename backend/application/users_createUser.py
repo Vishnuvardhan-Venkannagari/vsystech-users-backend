@@ -24,28 +24,30 @@ router = fastapi.APIRouter(prefix='/users',  tags=['Users'])
 @router.post("/createUser") #, response_model=Users
 async def createUser(data: vsystech_users_models.CreateUsers):
     data = data.model_dump()
-    password = "password"
+    # password = "password"
     email = data.get("email")
-    name = data.get("name")
+    # firstName = data.get("firstName")
+    # lastName = data.get("lastName")
     dob_str = data.get("dob")
-    user = restapi.firebase_auth.create_user_with_email_and_password(email, password)
+    user = restapi.firebase_auth.create_user_with_email_and_password(email, data["password"])
     user_id = user['localId']
-    dob = datetime.datetime.strptime(dob_str, '%d-%m-%Y')
-    epoch_dob = dob.timestamp() * 1000
+    # dob = datetime.datetime.strptime(dob_str, '%d-%m-%Y')
+    # epoch_dob = dob.timestamp() * 1000
     created_time = datetime.datetime.now()
     created_time = time.mktime(created_time.timetuple())
     user_data = {
             "email": email,
             "isEmailVerified": False,
             "user_id": user_id,
-            "name": name,
+            "firstName": data["firstName"],
+            "lastName": data["lastName"],
             "disabled": False,
-            "state": data.get("state"),
-            "dob": epoch_dob,
+            "state": data.get("state", ""),
+            "dob": data.get("dob", ""),
             "role": "user",
             "phone_number": data.get("phone_number", ""),
             "country": data.get("country", "USA"),
-            "photo_url": data.get("photo_url", ""),
+            # "photo_url": data.get("photo_url", ""),
             "created_time": created_time,
         }
     # db = firestore.client()
