@@ -28,6 +28,8 @@ async def updateUser(data: vsystech_users_models.UpdateUsers):
         update_doc["gender"] = data["gender"]
     if data.get("profilePicture"):
         update_doc["profilePicture"] = data["profilePicture"]
+    else:
+        update_doc["profilePicture"] = "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
     if data.get("dob"):
         update_doc["dob"] = data["dob"]
     if data.get("state"):
