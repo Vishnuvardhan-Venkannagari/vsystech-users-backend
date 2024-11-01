@@ -15,12 +15,8 @@ from vsystech_users_models import Users
 
 router = fastapi.APIRouter(prefix='/users',  tags=['Users'])
 
-@router.post('/updateUser' ,response_model=Users)
+@router.post('/updateUser')
 async def updateUser(data: vsystech_users_models.UpdateUsers):
-    # print(upload_to_s3bucket())
-    # st, msg = await upload_to_s3bucket()
-    # print(msg)
-    # print(restapi.set_user)
     update_doc = {}
     data = data.model_dump()
     data["country"] = "USA"
@@ -36,9 +32,11 @@ async def updateUser(data: vsystech_users_models.UpdateUsers):
         update_doc["dob"] = data["dob"]
     if data.get("state"):
         update_doc["state"] = data["state"]
+    if data.get("phoneNumber"):
+        update_doc["phoneNumber"] = data["phoneNumber"]
     if data.get("country"):
         update_doc["country"] = data["country"]
     if update_doc:
         restapi.db.child("users").child(data["uid"]).update(update_doc)
     user_data = restapi.db.child("users").child(data["uid"]).get()
-    return user_data
+    return {"status": "success", "data":dict(user_data.val())}

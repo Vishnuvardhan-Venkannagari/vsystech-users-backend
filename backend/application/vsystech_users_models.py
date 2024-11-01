@@ -28,20 +28,21 @@ class CreateUsers(pydantic.BaseModel):
     lastName: str
     email: str
     password: str
-    phoneNumber: typing.Optional[str]
-    profilePicture: typing.Optional[str]
-    dob: typing.Optional[str]
-    state: typing.Optional[str]
+    # phoneNumber: typing.Optional[str]
+    # profilePicture: typing.Optional[str]
+    # dob: typing.Optional[str]
+    # state: typing.Optional[str]
 
 class UpdateUsers(pydantic.BaseModel):
     uid:  str
-    firstName: typing.Optional[str]
-    lastName: typing.Optional[str]    
-    gender: typing.Optional[str]
-    profilePicture: typing.Optional[str]
-    dob: typing.Optional[str]
-    state: typing.Optional[str]
-    country: typing.Optional[str]
+    firstName: typing.Optional[str] = None
+    lastName: typing.Optional[str] = None
+    gender: typing.Optional[str] = None
+    profilePicture: typing.Optional[str] = None
+    dob: typing.Optional[str] = None
+    state: typing.Optional[str] = None
+    country: typing.Optional[str] = None
+    phoneNumber: typing.Optional[str] = None
 
 class loginWithEmail(pydantic.BaseModel):
     email: str
