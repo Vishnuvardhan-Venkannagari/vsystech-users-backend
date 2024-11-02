@@ -19,8 +19,8 @@ router = fastapi.APIRouter(prefix='/users',  tags=['Users'])
 async def get(id: str):
     get_user = restapi.db.child("users").child(id).get()
     user_data = dict(get_user.val())
-    if not user_data.get("photo_url", ""):
-        user_data["photo_url"] = "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
+    if not user_data.get("profilePicture", ""):
+        user_data["profilePicture"] = "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
 
     return user_data
     # return await Use.get(id)
