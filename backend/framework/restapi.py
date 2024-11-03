@@ -181,7 +181,7 @@ async def logIn(data: logInData, response: fastapi.Response):
 async def me(request: fastapi.Request):
     auth_user = context.context.get('auth_user', {})
     if auth_user.get("user_data", {}):
-        dob_epoch = int(auth_user.get("user_data", {}).get("dob", ""))
+        # dob_epoch = int(auth_user.get("user_data", {}).get("dob", ""))
         # if 0 < dob_epoch < 32503680000:  # 32503680000 is the timestamp for year 9999
         #     dob = datetime.datetime.strftime(
         #         datetime.datetime.fromtimestamp(dob_epoch),
@@ -195,7 +195,7 @@ async def me(request: fastapi.Request):
             'lastName': auth_user.get("user_data", {}).get('lastName', '-'),
             'roles': auth_user.get("user_data", {}).get('roles', []),#[role for role, assigned in rpt.get("user_data", {}).get('roles', {}).items() if assigned],
             'email': auth_user.get("user_data", {}).get('email', '-'),
-            "used_id": auth_user.get("user_data", {}).get("user_id", ""),
+            "user_id": auth_user.get("user_data", {}).get("user_id", ""),
             "country": auth_user.get("user_data", {}).get("country", ""),
             "created_time": datetime.datetime.strftime(datetime.datetime.fromtimestamp(int(auth_user.get("user_data", {}).get("created_time", ""))), "%m-%d-%Y"),
             "dob": auth_user.get("user_data", {}).get('dob', ""),

@@ -45,7 +45,7 @@ async def createUser(data: vsystech_users_models.CreateUsers):
             "state": data.get("state", ""),
             "dob": data.get("dob", ""),
             "role": "user",
-            "phone_number": data.get("phone_number", ""),
+            "phoneNumber": data.get("phone_number", ""),
             "country": data.get("country", "USA"),
             # "photo_url": data.get("photo_url", ""),
             "created_time": created_time,

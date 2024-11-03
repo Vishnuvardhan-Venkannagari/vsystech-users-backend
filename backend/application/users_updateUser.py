@@ -34,11 +34,12 @@ async def updateUser(data: vsystech_users_models.UpdateUsers):
         update_doc["phoneNumber"] = data["phoneNumber"]
     if data.get("country"):
         update_doc["country"] = data["country"]
-    if update_doc:
-        restapi.db.child("users").child(data["uid"]).update(update_doc)
     if data.get("profilePicture"):
         update_doc["profilePicture"] = data["profilePicture"]
     else:
+        print("insdie else")
         update_doc["profilePicture"] = "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
+    if update_doc:
+        restapi.db.child("users").child(data["uid"]).update(update_doc)
     user_data = restapi.db.child("users").child(data["uid"]).get()
     return {"status": "success", "data":dict(user_data.val())}
