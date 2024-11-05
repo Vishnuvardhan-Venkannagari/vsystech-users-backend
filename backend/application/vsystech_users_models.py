@@ -50,8 +50,8 @@ class loginWithEmail(pydantic.BaseModel):
 
 class Products(mongomodel.MongoModel):
     # id: str = Field(None, alias="_id")  
-    id: str = pydantic.Field(**{})
-    name: str = pydantic.Field(**{})
+    id: typing.Optional[str] = pydantic.Field(**{})
+    name: typing.Optional[str] = pydantic.Field(**{})
     description: typing.Optional[str] = pydantic.Field(**{})
     short_description: typing.Optional[str] = pydantic.Field(**{})
     price: typing.Optional[int] = pydantic.Field(**{})
@@ -65,3 +65,30 @@ class ProductsResponse(pydantic.BaseModel):
     data: typing.List[Products]
     total: int = pydantic.Field(0)
     count: int = pydantic.Field(0)
+
+class UserRef(pydantic.BaseModel):
+    uid: str
+    firstName: str
+    lastName: str
+    email: str
+    phoneNumber: typing.Optional[str] = None
+
+class ProductRef(pydantic.BaseModel):
+    id: str = pydantic.Field(**{})
+    name: str = pydantic.Field(**{})
+    price: float = pydantic.Field(**{})
+    img_url: str = pydantic.Field(**{})
+
+class CartItem(mongomodel.MongoModel):
+    id: typing.Optional[str] = None
+    userData: UserRef
+    status: vsystech_users_enum.CartStatus
+    is_selected: bool = pydantic.Field()
+    productData: ProductRef
+    
+    class Config:
+        db_collection = 'vsystech'
+        collection_name = 'cart'
+
+class AddCartItemParams(pydantic.BaseModel):
+    product_id: str
