@@ -49,3 +49,13 @@ async def get(id: str):
 @router.post('/products', response_model=Products, tags=['Products'])
 async def create(inputObj: Products):
     return await Products.create(inputObj)
+
+@router.get('/cart', response_model=CartItemResponse, tags=['Cart'])
+async def get_all(response: fastapi.Response, params = fastapi.Depends(framework.queryparams.QueryParams)):
+    if params.download:
+        response.headers['Content-Disposition'] = f'attachment; filename="reviews.html"'
+    return await CartItem.get_all(params)
+
+@router.get('/cart/{id}', response_model=CartItem, tags=['Cart'])
+async def get(id: str):
+    return await CartItem.get(id)

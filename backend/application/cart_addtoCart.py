@@ -13,8 +13,8 @@ import bson
 
 router = fastapi.APIRouter(prefix='/cart',  tags=['Cart'])
 
-@router.post('/addToCart')
-async def addToCart(data: AddCartItemParams, response_model=CartItem):
+@router.post('/addToCart', response_model=CartItem)
+async def addToCart(data: AddCartItemParams):
     auth_user = context.context.get('auth_user', {})
     if not auth_user:
         return {"satus": False, "msg": "No user found"}

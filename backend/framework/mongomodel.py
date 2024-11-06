@@ -101,12 +101,14 @@ class BaseMongoModel(pydantic.BaseModel):
     @classmethod
     async def get_all(cls, params: framework.queryparams.QueryParams):
         mongoquery = {"collation": {"locale": "en"}}
+        print(params.fields)
         if params.q:
             mongoquery["filter"] = json.loads(params.q)
         else:
             mongoquery["filter"] = {}
-        if params.fields:
-            mongoquery['projection'] = list(set(json.loads(params.fields) + ["tid"]))
+        # if params.fields:
+        #     mongoquery['projection'] = list(set(json.loads(params.fields) + ["tid"]))
+        print(mongoquery)
         cursor = cls.collection().find(**mongoquery, sort=None)
         resp = {}
         cursor.skip(params.skip)

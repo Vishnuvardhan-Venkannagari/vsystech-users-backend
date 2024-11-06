@@ -90,5 +90,11 @@ class CartItem(mongomodel.MongoModel):
         db_collection = 'vsystech'
         collection_name = 'cart'
 
+class CartItemResponse(pydantic.BaseModel):
+    data: typing.List[CartItem]
+    total: int = pydantic.Field(0)
+    count: int = pydantic.Field(0)
+
+
 class AddCartItemParams(pydantic.BaseModel):
     product_id: str

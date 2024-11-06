@@ -7,16 +7,12 @@ import datetime
 import time
 import sys
 import os
-# print(os.getcwd() + "framework")
-# print("/Users/vishnureddy/Documents/MyProjects/vsystech-user-app/opt/backend/framework/")
 sys.path.append(os.getcwd() + "framework/")
 import restapi
 import pyrebase
 from restapi import firebase
 from vsystech_users_models import Users
 import pyrebase
-# auth = restapi.firebase_auth.auth()
-# db = firebase.database()
 
 
 
