@@ -1,4 +1,3 @@
-import fastapi
 from firebase_admin import auth,firestore
 import sys
 import os

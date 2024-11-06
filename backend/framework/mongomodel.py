@@ -101,7 +101,6 @@ class BaseMongoModel(pydantic.BaseModel):
     @classmethod
     async def get_all(cls, params: framework.queryparams.QueryParams):
         mongoquery = {"collation": {"locale": "en"}}
-        print(params.fields)
         if params.q:
             mongoquery["filter"] = json.loads(params.q)
         else:
