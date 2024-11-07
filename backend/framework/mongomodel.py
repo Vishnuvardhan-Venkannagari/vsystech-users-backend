@@ -107,7 +107,6 @@ class BaseMongoModel(pydantic.BaseModel):
             mongoquery["filter"] = {}
         # if params.fields:
         #     mongoquery['projection'] = list(set(json.loads(params.fields) + ["tid"]))
-        print(mongoquery)
         cursor = cls.collection().find(**mongoquery, sort=None)
         resp = {}
         cursor.skip(params.skip)

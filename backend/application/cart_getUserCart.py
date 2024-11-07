@@ -16,9 +16,8 @@ async def getCartItem():
     # if params.download:
     #     response.headers['Content-Disposition'] = f'attachment; filename="reviews.html"'
     auth_user = context.context.get('auth_user', {})
-    print(auth_user)
     if not auth_user.get("user_data", {}):
         return {"satus": False, "msg": "No user found"}
     auth_user = auth_user["user_data"]
-    query = {"userData.uid": auth_user["user_id"]}
+    query = {"userData.uid": auth_user["user_id"], "status": "InCart"}
     return await CartItem.get_all(QueryParams(q=json.dumps(query), limit=10000))
