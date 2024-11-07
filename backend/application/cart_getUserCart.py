@@ -7,6 +7,8 @@ from queryparams import QueryParams
 from vsystech_users_models import CartItem, CartItemResponse
 import pyrebase
 import json
+import fastapi
+
 router = fastapi.APIRouter(prefix='/cart',  tags=['Cart'])
 
 @router.get("/getCartItem") 
