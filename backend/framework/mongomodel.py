@@ -88,7 +88,7 @@ class BaseMongoModel(pydantic.BaseModel):
             data['u'] = datetime.utcnow()
             updated_doc = await self.collection().update_one({'_id':bson.ObjectId(self.id)}, {'$set': data})
             collection = self.collection().with_options()
-            resp = await collection.find_one(self.id)
+            resp = await collection.find_one(bson.ObjectId(data["id"]))
             return self.from_mongo(resp)
         except pymongo.errors.DuplicateKeyError as e:
             print("Duplicate")

@@ -80,11 +80,11 @@ class ProductRef(pydantic.BaseModel):
     img_url: str = pydantic.Field(**{})
 
 class CartItem(mongomodel.MongoModel):
-    id: typing.Optional[str] = None
-    userData: UserRef
-    status: vsystech_users_enum.CartStatus
-    is_selected: bool = pydantic.Field()
-    productData: ProductRef
+    id: typing.Optional[str] = pydantic.Field("")
+    userData: UserRef = pydantic.Field("")
+    status: vsystech_users_enum.CartStatus = pydantic.Field(**{})
+    is_selected: bool  = pydantic.Field(False)
+    productData: ProductRef = pydantic.Field("")
     
     class Config:
         db_collection = 'vsystech'
@@ -98,3 +98,6 @@ class CartItemResponse(pydantic.BaseModel):
 
 class AddCartItemParams(pydantic.BaseModel):
     product_id: str
+
+class RemoveCartItemParams(pydantic.BaseModel):
+    cart_item_id: str
