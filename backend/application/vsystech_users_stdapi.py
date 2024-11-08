@@ -52,6 +52,7 @@ async def create(inputObj: Products):
 
 @router.get('/cart', response_model=CartItemResponse, tags=['Cart'])
 async def get_all(response: fastapi.Response, params = fastapi.Depends(framework.queryparams.QueryParams)):
+    print(params)
     if params.download:
         response.headers['Content-Disposition'] = f'attachment; filename="reviews.html"'
     return await CartItem.get_all(params)
