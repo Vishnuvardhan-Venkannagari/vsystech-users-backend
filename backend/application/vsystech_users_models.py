@@ -81,7 +81,7 @@ class ProductRef(pydantic.BaseModel):
 
 class CartItem(mongomodel.MongoModel):
     id: typing.Optional[str] = pydantic.Field("")
-    userData: UserRef = pydantic.Field("")
+    userData: UserRef = pydantic.Field(**{})
     status: vsystech_users_enum.CartStatus = pydantic.Field(**{})
     is_selected: bool  = pydantic.Field(False)
     productData: ProductRef = pydantic.Field("")
@@ -101,3 +101,23 @@ class AddCartItemParams(pydantic.BaseModel):
 
 class RemoveCartItemParams(pydantic.BaseModel):
     cart_item_id: str
+
+class GatewayRef(pydantic.BaseModel):
+    gateway_name: str = pydantic.Field("")
+    api_key: str = pydantic.Field("")
+    api_secret: str = pydantic.Field("")
+
+class PaymentGateway(mongomodel.MongoModel):
+    id: typing.Optional[str] = pydantic.Field("")
+    gateway: GatewayRef = pydantic.Field("")
+    is_verified: bool = pydantic.Field(False)
+    veifiedBy: UserRef = pydantic.Field(**{})
+
+    class Config:
+        db_collection = 'vsystech'
+        collection_name = 'paymentgateway'
+
+class PaymentGatewayParams(pydantic.BaseModel):
+    gateway_name: str = pydantic.Field("")
+    api_key: str = pydantic.Field("")
+    api_secret: str = pydantic.Field("")
