@@ -35,14 +35,14 @@ class CreateUsers(pydantic.BaseModel):
 
 class UpdateUsers(pydantic.BaseModel):
     uid:  str
-    firstName: typing.Optional[str] = None
-    lastName: typing.Optional[str] = None
-    gender: typing.Optional[str] = None
-    profilePicture: typing.Optional[str] = None
-    dob: typing.Optional[str] = None
-    state: typing.Optional[str] = None
-    country: typing.Optional[str] = None
-    phoneNumber: typing.Optional[str] = None
+    firstName: typing.Optional[str] = pydantic.Field("")
+    lastName: typing.Optional[str] = pydantic.Field("")
+    gender: typing.Optional[str] = pydantic.Field("")
+    profilePicture: typing.Optional[str] = pydantic.Field("")
+    dob: typing.Optional[str] = pydantic.Field("")
+    state: typing.Optional[str] = pydantic.Field("")
+    country: typing.Optional[str] = pydantic.Field("")
+    phoneNumber: typing.Optional[str] = pydantic.Field("")
 
 class loginWithEmail(pydantic.BaseModel):
     email: str
@@ -50,12 +50,12 @@ class loginWithEmail(pydantic.BaseModel):
 
 class Products(mongomodel.MongoModel):
     # id: str = Field(None, alias="_id")  
-    id: typing.Optional[str] = pydantic.Field(**{})
-    name: typing.Optional[str] = pydantic.Field(**{})
-    description: typing.Optional[str] = pydantic.Field(**{})
-    short_description: typing.Optional[str] = pydantic.Field(**{})
-    price: typing.Optional[int] = pydantic.Field(**{})
-    img_url: typing.Optional[str] = pydantic.Field(**{})
+    id: typing.Optional[str] = pydantic.Field("")
+    name: typing.Optional[str] = pydantic.Field("")
+    description: typing.Optional[str] = pydantic.Field("")
+    short_description: typing.Optional[str] = pydantic.Field("")
+    price: typing.Optional[int] = pydantic.Field("")
+    img_url: typing.Optional[str] = pydantic.Field("")
 
     class Config:
         db_collection = 'vsystech'
@@ -77,7 +77,7 @@ class ProductRef(pydantic.BaseModel):
     id: str = pydantic.Field(**{})
     name: str = pydantic.Field(**{})
     price: float = pydantic.Field(**{})
-    img_url: str = pydantic.Field(**{})
+    img_url: typing.Optional[str] = pydantic.Field(**{})
 
 class CartItem(mongomodel.MongoModel):
     id: typing.Optional[str] = pydantic.Field("")
@@ -104,6 +104,7 @@ class RemoveCartItemParams(pydantic.BaseModel):
 
 class GatewayRef(pydantic.BaseModel):
     gateway_name: str = pydantic.Field("")
+    base_url: str = pydantic.Field("")
     api_key: str = pydantic.Field("")
     api_secret: str = pydantic.Field("")
 
@@ -121,3 +122,45 @@ class PaymentGatewayParams(pydantic.BaseModel):
     gateway_name: str = pydantic.Field("")
     api_key: str = pydantic.Field("")
     api_secret: str = pydantic.Field("")
+
+
+class PaymentProductRef(pydantic.BaseModel):
+    id: str = pydantic.Field(**{})
+    name: str = pydantic.Field(**{})
+    price: float = pydantic.Field(**{})
+
+class RefundedByUserRef(pydantic.BaseModel):
+    uid: typing.Optional[str] = pydantic.Field("")
+    firstName: typing.Optional[str] = pydantic.Field("")
+    lastName: typing.Optional[str] = pydantic.Field("")
+    email: typing.Optional[str] = pydantic.Field("")
+    phoneNumber: typing.Optional[str] = pydantic.Field("")
+
+
+class Payments(mongomodel.MongoModel):
+    id: typing.Optional[str] = pydantic.Field("")
+    gateway_name: str = pydantic.Field(**{})
+    order_id: typing.Optional[str] = pydantic.Field("")
+    payment_url: typing.Optional[str] = pydantic.Field("")
+    approve_url: typing.Optional[str] = pydantic.Field("")
+    payment_id: typing.Optional[str] = pydantic.Field("")
+    payment_status: typing.Optional[vsystech_users_enum.PaymentStatus] = pydantic.Field("")
+    order_amt: float = pydantic.Field(0.0)
+    paid_amt: float = pydantic.Field(0.0)
+    is_refunded: bool = pydantic.Field(False)
+    refund_id: typing.Optional[str] = pydantic.Field("")
+    refunded_amt: float = pydantic.Field(0.0)
+    refunded_on: typing.Optional[str] = pydantic.Field("")
+    refunded_by: typing.Optional[RefundedByUserRef] = None
+    products: typing.Optional[typing.List[PaymentProductRef]] = pydantic.Field({})
+    userData: typing.Optional[UserRef] = pydantic.Field({})
+    currency: typing.Optional[str] = pydantic.Field("")
+
+    class Config:
+        db_collection = 'vsystech'
+        collection_name = 'payments'
+
+
+class PaymentCreatePayment(pydantic.BaseModel):
+    gateway_name: str = pydantic.Field(**{})
+    # order_amt: float = pydantic.Field(**{})

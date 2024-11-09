@@ -39,6 +39,7 @@ async def insertCreds(data: PaymentGatewayParams):
     input_doc = {
         "gateway": {
             "gateway_name": data["gateway_name"],
+            "base_url": "https://api-m.sandbox.paypal.com/v2",
             "api_key": data["api_key"],
             "api_secret": data["api_secret"]
         },

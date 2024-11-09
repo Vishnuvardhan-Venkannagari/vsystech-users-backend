@@ -7,3 +7,12 @@ class CartStatus(str, enum.Enum):
     CheckedOut = 'CheckedOut'
 
 
+class PaymentStatus(str, enum.Enum):
+    PAID = 'PAID'
+    CANCELED = 'CANCELED'
+    CHECKEDOUT = 'CHECKEDOUT'
+    Authorized = 'Authorized'
+    Captured = 'Captured'
+    Refunded = 'Refunded'
+    Failed = 'Failed'
+    Pending = 'Pending'
