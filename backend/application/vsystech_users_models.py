@@ -164,3 +164,7 @@ class Payments(mongomodel.MongoModel):
 class PaymentCreatePayment(pydantic.BaseModel):
     gateway_name: str = pydantic.Field(**{})
     # order_amt: float = pydantic.Field(**{})
+
+class PaymentVerifyPayment(pydantic.BaseModel):
+    payment_id: str = pydantic.Field("")
+    # order_amt: float = pydantic.Field(**{})
