@@ -91,7 +91,7 @@ class PayPal(PaymentGateways):
                         "landing_page": "LOGIN", 
                         "shipping_preference": "SET_PROVIDED_ADDRESS", 
                         "user_action": "PAY_NOW", 
-                        "return_url": "https://example.com/returnUrl", 
+                        "return_url": "https://app.vsystech.net/verifyPayment", 
                         "cancel_url": "https://example.com/cancelUrl" 
                     } 
                 } 
