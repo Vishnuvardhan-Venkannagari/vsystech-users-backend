@@ -81,7 +81,7 @@ class ProductRef(pydantic.BaseModel):
 
 class CartItem(mongomodel.MongoModel):
     id: typing.Optional[str] = pydantic.Field("")
-    userData: UserRef = pydantic.Field(**{})
+    userData: UserRef = pydantic.Field({})
     status: vsystech_users_enum.CartStatus = pydantic.Field(**{})
     is_selected: bool  = pydantic.Field(False)
     productData: ProductRef = pydantic.Field("")

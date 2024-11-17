@@ -23,12 +23,13 @@ class PaymentGateways:
     async def createOrder(self,data):
         pass
 
-    async def verfyOrder(self, data):
+    async def verifyOrder(self, data):
         pass
 
 class PayPal(PaymentGateways):
     
     async def verifyCredential(self,gatwayName):
+        await super().verifyCredential(gatwayName)
         query = {"gateway.gateway_name": gatwayName, "is_verified": True}
         data =  await PaymentGateway.get_all(QueryParams(q=json.dumps(query), limit=1))
         if not data.get("data", []):
@@ -52,6 +53,7 @@ class PayPal(PaymentGateways):
             return {"status": False, "msg": "Invalid creds"}
         return  {"status": True, "data": sendRequest.json(), "gateway_details": data}
     async def createOrder(self, data):
+        await super().createOrder(data)
         creds = await self.verifyCredential(data["gateway_name"])
         if not creds.get("status", False):
             return {"status": False, "msg": "No creds found"}
@@ -110,6 +112,7 @@ class PayPal(PaymentGateways):
 
 
 
-    async def verfyOrder(data):
+    async def verifyOrder(data):
+        await super().verifyOrder(data)
         pass
 
