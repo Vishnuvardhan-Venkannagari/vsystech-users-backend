@@ -16,3 +16,7 @@ class PaymentStatus(str, enum.Enum):
     Refunded = 'Refunded'
     Failed = 'Failed'
     Pending = 'Pending'
+
+class ProductStatus(str, enum.Enum):
+    InStock = "InStock"
+    OutOFStock = "OutOFStock"

@@ -48,14 +48,26 @@ class loginWithEmail(pydantic.BaseModel):
     email: str
     password: str
 
+class AttributesRef(pydantic.BaseModel):
+    color: typing.Optional[str] = pydantic.Field("")
+    model: typing.Optional[str] = pydantic.Field("")
+    material: typing.Optional[str] = pydantic.Field("")
+
 class Products(mongomodel.MongoModel):
     # id: str = Field(None, alias="_id")  
     id: typing.Optional[str] = pydantic.Field("")
     name: typing.Optional[str] = pydantic.Field("")
+    brand: typing.Optional[str] = pydantic.Field("")
+    status: typing.Optional[vsystech_users_enum.ProductStatus] = pydantic.Field("")
+    category: typing.Optional[str] = pydantic.Field("")
+    sku_id: typing.Optional[str] = pydantic.Field("")
     description: typing.Optional[str] = pydantic.Field("")
     short_description: typing.Optional[str] = pydantic.Field("")
+    stock_quantity: typing.Optional[int] = pydantic.Field(0)
     price: typing.Optional[int] = pydantic.Field("")
     img_url: typing.Optional[str] = pydantic.Field("")
+    thumbnail_image_url: typing.Optional[str] = pydantic.Field("")
+    attributes: typing.Optional[AttributesRef] = pydantic.Field({})
 
     class Config:
         db_collection = 'vsystech'
