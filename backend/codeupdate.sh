@@ -48,6 +48,7 @@ configureframework() {
 restartServices() {
     sudo systemctl enable backend.service
     sudo systemctl restart backend.service
+    sudo systemctl restart websocket.service
     sleep 5
 }
 
