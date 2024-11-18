@@ -46,6 +46,7 @@ async def paymentSocket(websocket: WebSocket,id: str):
             if await rcon.hexists("paymentsdata", id):
                 data = {"status": "success", "msg": "payment completed"}
                 await sockets.send_personal_message(json.dumps(data), websocket)
+                await rcon.hdel("paymentsdata", id)
                 is_success = True
     except Exception as e:
         # await sockets.disconnect(websocket)
