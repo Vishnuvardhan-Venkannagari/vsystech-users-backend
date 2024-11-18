@@ -29,6 +29,7 @@ sockets = ConnectionManager()
 @app.websocket("/ws/{id}")
 async def paymentSocket(websocket: WebSocket,id: str):
     await sockets.connect(websocket)
+    print("Socket connection created")
     rcon = await get_redis_connection()
     is_success = False
     try:
