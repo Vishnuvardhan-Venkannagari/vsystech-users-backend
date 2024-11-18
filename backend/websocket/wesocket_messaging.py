@@ -8,7 +8,10 @@ from redispool import get_redis_connection
 app = FastAPI()
 app.add_middleware(
         CORSMiddleware,
-        allow_origins=['*']
+        allow_origins=['*'],
+        allow_methods=["*"],  # Include all methods
+        allow_headers=["*"],  # Allow all headers
+        allow_credentials=True
 )
 class ConnectionManager:
     def __init__(self):
