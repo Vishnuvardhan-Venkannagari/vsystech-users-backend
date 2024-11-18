@@ -2,6 +2,7 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from typing import Dict, List
 from fastapi.middleware.cors import CORSMiddleware
 import sys
+import datetime
 import os
 sys.path.append(os.getcwd() + "framework/")
 from redispool import get_redis_connection
@@ -13,6 +14,8 @@ app.add_middleware(
         allow_headers=["*"],  # Allow all headers
         allow_credentials=True
 )
+MaxReturnTime = 4 * 60
+
 class ConnectionManager:
     def __init__(self):
         self.active_connections: List[WebSocket] = []
@@ -35,12 +38,14 @@ async def paymentSocket(websocket: WebSocket,id: str):
     print("Socket connection created")
     rcon = await get_redis_connection()
     is_success = False
+    startTime = datetime.datetime.utcnow().timestamp()
     try:
-        while True:
-            if rcon.hexists("paymentsdata", id):
+        while datetime.datetime.utcnow().timestamp() < startTime + MaxReturnTime:
+            if await rcon.hexists("paymentsdata", id):
                 await sockets.send_personal_message("Success", websocket)
                 is_success = True
-    except WebSocketDisconnect:
-        await sockets.disconnect(id)
-    if is_success:
+    except Exception as e:
+        # await sockets.disconnect(websocket)
+        print("Error occured", e)
+    if not is_success:
         await sockets.send_personal_message("Failed", websocket)
