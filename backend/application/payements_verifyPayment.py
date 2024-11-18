@@ -19,7 +19,8 @@ router = fastapi.APIRouter(prefix='/payments',  tags=['Payments'])
 async def verifyPayment(token: str = fastapi.Query(...), PayerID: str = fastapi.Query(...)): #: PaymentVerifyPayment
     print(token, PayerID)
     rcon = await get_redis_connection()
-    await rcon.hset("paymentsdata", token)
+    data = {"status": "Success", "msg": "Success"}
+    await rcon.hset("paymentsdata", token, json.dumps(data))
     return {"status": True, "msg": "success"}
     # if not auth_user.get("user_data", {}):
     #     return {"status": False, "msg": "No user found"}
