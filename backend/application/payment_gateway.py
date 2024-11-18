@@ -129,6 +129,6 @@ class PayPal(PaymentGateways):
             gateway_details["gateway"]["base_url"] + f"/checkout/orders/{data["order_id"]}/capture",
             headers=headers
         )
-        print(verify_payement)
-        return verify_payement
+        print(verify_payement.json())
+        return verify_payement.json()
 
