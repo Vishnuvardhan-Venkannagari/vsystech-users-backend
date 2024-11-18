@@ -3,9 +3,9 @@ import sys
 import os
 import context
 sys.path.append(os.getcwd() + "framework/")
-import queryparams
+from queryparams import QueryParams
 from redispool import get_redis_connection
-from vsystech_users_models import PaymentVerifyPayment
+from vsystech_users_models import Payments
 import pyrebase
 import bson
 import json
@@ -19,6 +19,11 @@ router = fastapi.APIRouter(prefix='/payments',  tags=['Payments'])
 async def verifyPayment(token: str = fastapi.Query(...), PayerID: str = fastapi.Query(...)): #: PaymentVerifyPayment
     print(token, PayerID)
     rcon = await get_redis_connection()
+    gateway =  getgatewayName("PayPal")
+    query = {"order_id": token}
+    order_details = await Payments.get_all(QueryParams(q=json.dumps(query), limit=10000))
+    print(order_details)
+    verify_order = gateway.verifyOrder({"gateway_name": "Paypal", "order_id": token})
     data = {"status": "Success", "msg": "Success"}
     await rcon.hset("paymentsdata", token, json.dumps(data))
     return {"status": True, "msg": "success"}

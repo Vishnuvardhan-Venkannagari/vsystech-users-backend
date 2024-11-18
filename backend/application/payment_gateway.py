@@ -112,7 +112,23 @@ class PayPal(PaymentGateways):
 
 
 
-    async def verifyOrder(data):
+    async def verifyOrder(self, data):
         await super().verifyOrder(data)
-        pass
+        creds = await self.verifyCredential(data["gateway_name"])
+        if not creds.get("status", False):
+            return {"status": False, "msg": "No creds found"}
+        gateway_details = creds["gateway_details"]
+        creds = creds["data"]
+        headers = {
+            'Content-Type': 'application/json',
+            'PayPal-Request-Id': data["id"],
+            # 'Authorization': f'Basic {creds["gateway"]["api_key"]}:{creds["gateway"]["api_secret"]}',
+            'Authorization': f'Bearer {creds["access_token"]}',
+        }
+        verify_payement = requests.post(
+            gateway_details["gateway"]["base_url"] + f"/checkout/orders/{data["order_id"]}/capture",
+            headers=headers
+        )
+        print(verify_payement)
+        return verify_payement
 

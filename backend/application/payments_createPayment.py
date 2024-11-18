@@ -59,9 +59,9 @@ async def createPayment(data: PaymentCreatePayment):
         "tid": str(bson.ObjectId()) 
     }
     order_details = await Payments(**create_order_data).create()
-    geteway =  getgatewayName(data["gateway_name"])
+    gateway =  getgatewayName(data["gateway_name"])
     order_details = order_details.model_dump()
-    createGatewayOrder = await geteway().createOrder(order_details)
+    createGatewayOrder = await gateway().createOrder(order_details)
     if not createGatewayOrder.get("status"):
         return {"status": False, "msg": "Payment not created"}
     
