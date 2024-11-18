@@ -23,7 +23,8 @@ async def verifyPayment(token: str = fastapi.Query(...), PayerID: str = fastapi.
     query = {"order_id": token}
     order_details = await Payments.get_all(QueryParams(q=json.dumps(query), limit=10000))
     print(order_details)
-    verify_order = gateway.verifyOrder({"gateway_name": "Paypal", "order_id": token})
+    data = {"gateway_name": "Paypal", "order_id": token}
+    verify_order = gateway().verifyOrder(data)
     data = {"status": "Success", "msg": "Success"}
     await rcon.hset("paymentsdata", token, json.dumps(data))
     return {"status": True, "msg": "success"}
