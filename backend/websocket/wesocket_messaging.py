@@ -4,8 +4,10 @@ from fastapi.middleware.cors import CORSMiddleware
 import sys
 import datetime
 import os
+import json
 sys.path.append(os.getcwd() + "framework/")
 from redispool import get_redis_connection
+
 app = FastAPI()
 app.add_middleware(
         CORSMiddleware,
@@ -43,11 +45,11 @@ async def paymentSocket(websocket: WebSocket,id: str):
         while datetime.datetime.utcnow().timestamp() < startTime + MaxReturnTime:
             if await rcon.hexists("paymentsdata", id):
                 data = {"status": "success", "msg": "payment completed"}
-                await sockets.send_personal_message(data, websocket)
+                await sockets.send_personal_message(json.dumps(data), websocket)
                 is_success = True
     except Exception as e:
         # await sockets.disconnect(websocket)
         print("Error occured", e)
     if not is_success:
         data = {"status": "failed", "msg": "payment not completed"}
-        await sockets.send_personal_message(data, websocket)
+        await sockets.send_personal_message(json.dumps(data), websocket)
