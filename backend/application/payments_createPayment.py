@@ -28,6 +28,7 @@ async def createPayment(data: PaymentCreatePayment):
     total_price = 0.0
     products_ref = []
     if not cartItems.get("data", []):
+        print("inside")
         return {"status": False, "msg": "No items found"}
     cartItems = cartItems["data"]
     for item in cartItems:
@@ -40,7 +41,8 @@ async def createPayment(data: PaymentCreatePayment):
     if data["gateway_name"] == "PayPal":
         paypal_fee_percent = 0.029
         fixed_fee = 0.30
-        total_price = (total_price / (1 - paypal_fee_percent)) + fixed_fee
+        paypal_fee = round(total_price * paypal_fee_percent + fixed_fee, 2)
+        total_price = total_price + paypal_fee
     user_ref = {
         "uid": auth_user["user_id"], 
         "firstName": auth_user["firstName"],

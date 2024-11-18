@@ -125,8 +125,9 @@ class PayPal(PaymentGateways):
             # 'Authorization': f'Basic {creds["gateway"]["api_key"]}:{creds["gateway"]["api_secret"]}',
             'Authorization': f'Bearer {creds["access_token"]}',
         }
+        order_id = data["order_id"]
         verify_payement = requests.post(
-            gateway_details["gateway"]["base_url"] + f"/checkout/orders/{data["order_id"]}/capture",
+            gateway_details["gateway"]["base_url"] + f"/checkout/orders/{order_id}/capture",
             headers=headers
         )
         print(verify_payement.json())
