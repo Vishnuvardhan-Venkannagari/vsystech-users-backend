@@ -23,6 +23,7 @@ async def cancelPayment(token: str = fastapi.Query(...)):
     if not order_details["data"]:
         return {"status": False, "msg": "No data found"}
     order_details = order_details["data"][0]
+    print(order_details)
     update_doc = {"id": order_details["id"], 
         "payment_status": "CANCELED",
         "c": order_details["created"],
