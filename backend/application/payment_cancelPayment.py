@@ -16,8 +16,8 @@ from payment_gateway import getgatewayName
 router = fastapi.APIRouter(prefix='/payments',  tags=['Payments'])
 
 @router.get("/cancelPayment") 
-async def cancelPayment(token: str = fastapi.Query(...), PayerID: str = fastapi.Query(...)): #: PaymentVerifyPayment
-    print(token, PayerID)
+async def cancelPayment(token: str = fastapi.Query(...)):
+    print(token)
     rcon = await get_redis_connection()
     gateway =  getgatewayName("PayPal")
     query = {"order_id": token}
@@ -26,10 +26,7 @@ async def cancelPayment(token: str = fastapi.Query(...), PayerID: str = fastapi.
     if not order_details["data"]:
         return {"status": False, "msg": "No data found"}
     order_details = order_details["data"][0]
-    # data = {"gateway_name": "PayPal", "order_id": token}
-    verify_order = await gateway().verifyOrder(order_details)
-    print(verify_order)
-    data = {"status": "Success", "msg": "Success"}
+    data = {"status": "failed", "msg": "payment cancelled"}
     await rcon.hset("paymentsdata", token, json.dumps(data))
     return {"status": True, "msg": "success"}
     # if not auth_user.get("user_data", {}):
