@@ -26,7 +26,7 @@ async def cancelPayment(token: str = fastapi.Query(...)):
     print(order_details)
     update_doc = {"id": order_details["id"], 
         "payment_status": "CANCELED",
-        "c": order_details["created"],
+        "c": order_details["c"],
         "u": datetime.utcnow(),
         "tid": order_details["id"]
     }
