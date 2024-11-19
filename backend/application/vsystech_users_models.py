@@ -151,7 +151,7 @@ class RefundedByUserRef(pydantic.BaseModel):
 
 class Payments(mongomodel.MongoModel):
     id: typing.Optional[str] = pydantic.Field("")
-    gateway_name: str = pydantic.Field(**{})
+    gateway_name: str = pydantic.Field("")
     order_id: typing.Optional[str] = pydantic.Field("")
     payment_url: typing.Optional[str] = pydantic.Field("")
     approve_url: typing.Optional[str] = pydantic.Field("")
