@@ -75,7 +75,11 @@ async def options_handler():
 
 @app.middleware('http')
 async def authMiddleware(request: fastapi.Request, call_next):
-    if request.url.path in ['/docs', '/openapi.json', '/api/login', '/ping', "/api/me", "/api/users/createUser", "/api/users/createUser", "/api/payments/verifyPayment"] :#+ framework.settings.noauth_urls:
+    no_auth_urls = ['/docs', '/openapi.json', '/api/login', '/ping', "/api/me",
+        "/api/users/createUser", "/api/users/createUser", "/api/payments/verifyPayment",
+        "/api/payments/cancelPayment"
+    ]
+    if request.url.path in  no_auth_urls:
         return await call_next(request)
     if not request.headers.get('authtoken'):
         redirect_url = f'https://{request.base_url.hostname}/api/login'
