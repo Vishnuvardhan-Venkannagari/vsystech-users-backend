@@ -23,14 +23,13 @@ async def cancelPayment(token: str = fastapi.Query(...)):
     if not order_details["data"]:
         return {"status": False, "msg": "No data found"}
     order_details = order_details["data"][0]
-    print(order_details)
     update_doc = {"id": order_details["id"], 
         "payment_status": "CANCELED",
         "c": order_details["c"],
         "u": datetime.utcnow(),
         "tid": order_details["id"]
     }
-    print(await Payments(**update_doc).update())
+    await Payments(**update_doc).update()
     data = {"status": "failed", "msg": "payment cancelled"}
     await rcon.hset("paymentsdata", token, json.dumps(data))
     return {"status": True, "msg": "success"}
