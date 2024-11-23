@@ -16,8 +16,6 @@ router = fastapi.APIRouter(prefix='/payments',  tags=['Payments'])
 
 @router.post("/createPayment") 
 async def createPayment(data: PaymentCreatePayment):
-    # if params.download:
-    #     response.headers['Content-Disposition'] = f'attachment; filename="reviews.html"'
     auth_user = context.context.get('auth_user', {})
     if not auth_user.get("user_data", {}):
         return {"status": False, "msg": "No user found"}
@@ -25,14 +23,13 @@ async def createPayment(data: PaymentCreatePayment):
     data = data.model_dump()
     query = {"userData.uid": auth_user["user_id"], "status": "InCart"}
     cartItems =  await CartItem.get_all(QueryParams(q=json.dumps(query), limit=10000))
-    total_price = 0.0
+    cart_price = 0.0
     products_ref = []
     if not cartItems.get("data", []):
-        print("inside")
         return {"status": False, "msg": "No items found"}
     cartItems = cartItems["data"]
     for item in cartItems:
-        total_price += item["productData"]["price"]
+        cart_price += item["productData"]["price"]
         products_ref.append({
             "id": item["productData"]["id"], 
             "name": item["productData"]["name"],  
@@ -41,8 +38,8 @@ async def createPayment(data: PaymentCreatePayment):
     if data["gateway_name"] == "PayPal":
         paypal_fee_percent = 0.029
         fixed_fee = 0.30
-        paypal_fee = round(total_price * paypal_fee_percent + fixed_fee, 2)
-        total_price = total_price + paypal_fee
+        paypal_fee = round(cart_price * paypal_fee_percent + fixed_fee, 2)
+        tax = round(cart_price * 0.075, 2)
     user_ref = {
         "uid": auth_user["user_id"], 
         "firstName": auth_user["firstName"],
@@ -54,7 +51,11 @@ async def createPayment(data: PaymentCreatePayment):
     create_order_data = {
         "gateway_name": data["gateway_name"],
         "payment_status": "CHECKEDOUT",
-        "order_amt": total_price,
+        "order_amt": data["totla_price"],
+        "cart_amt": cart_price,
+        "tax": tax,
+        "shipping_amt": 5,
+        "paypal_fees": paypal_fee,
         "paid_amt": 0.0,
         "refunded_amt": 0.0,
         "products": products_ref,

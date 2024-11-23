@@ -158,7 +158,11 @@ class Payments(mongomodel.MongoModel):
     payment_id: typing.Optional[str] = pydantic.Field("")
     payment_status: typing.Optional[vsystech_users_enum.PaymentStatus] = pydantic.Field("")
     order_amt: float = pydantic.Field(0.0)
-    paid_amt: float = pydantic.Field(0.0)
+    shipping_amt: typing.Optional[float] = pydantic.Field(0.0)
+    cart_amt: typing.Optional[float] = pydantic.Field(0.0)
+    tax: typing.Optional[float] = pydantic.Field(0.0)
+    paypal_fees: typing.Optional[float] = pydantic.Field(0.0)
+    paid_amt: typing.Optional[float] = pydantic.Field(0.0)
     is_refunded: bool = pydantic.Field(False)
     refund_id: typing.Optional[str] = pydantic.Field("")
     refunded_amt: float = pydantic.Field(0.0)
@@ -175,6 +179,7 @@ class Payments(mongomodel.MongoModel):
 
 class PaymentCreatePayment(pydantic.BaseModel):
     gateway_name: str = pydantic.Field(**{})
+    totla_price: float = pydantic.Field(0.0)
     # order_amt: float = pydantic.Field(**{})
 
 class PaymentVerifyPayment(pydantic.BaseModel):
