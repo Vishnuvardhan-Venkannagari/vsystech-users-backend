@@ -43,10 +43,10 @@ async def paymentSocket(websocket: WebSocket,id: str):
     startTime = datetime.datetime.utcnow().timestamp()
     try:
         while datetime.datetime.utcnow().timestamp() < startTime + MaxReturnTime:
-            if await rcon.hget("paymentsdata", id):
+            if await rcon.hexists("paymentsdata", id):
                 msg_data = await rcon.hget("paymentsdata", id)
-                # data = {"status": "success", "msg": "payment completed"}
-                await sockets.send_personal_message(json.dumps(msg_data), websocket)
+                data = {"status": "success", "msg": "payment completed"}
+                await sockets.send_personal_message(json.dumps(data), websocket)
                 await rcon.hdel("paymentsdata", id)
                 is_success = True
     except Exception as e:
@@ -55,3 +55,4 @@ async def paymentSocket(websocket: WebSocket,id: str):
     if not is_success:
         data = {"status": "failed", "msg": "payment not completed"}
         await sockets.send_personal_message(json.dumps(data), websocket)
+        await sockets.disconnect(websocket)
