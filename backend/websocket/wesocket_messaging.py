@@ -7,7 +7,6 @@ import os
 import json
 sys.path.append(os.getcwd() + "framework/")
 from redispool import get_redis_connection
-import asyncio
 
 app = FastAPI()
 app.add_middleware(
@@ -38,29 +37,21 @@ sockets = ConnectionManager()
 @app.websocket("/ws/{id}")
 async def paymentSocket(websocket: WebSocket,id: str):
     await sockets.connect(websocket)
-    print(f"WebSocket opened for ID: {id}")
+    print("Socket connection created")
     rcon = await get_redis_connection()
     is_success = False
     startTime = datetime.datetime.utcnow().timestamp()
     try:
         while datetime.datetime.utcnow().timestamp() < startTime + MaxReturnTime:
-            print("Inside")
             if await rcon.hexists("paymentsdata", id):
                 msg_data = await rcon.hget("paymentsdata", id)
-                print(f"Payment data found for ID {id}: {msg_data}")
+                # data = {"status": "success", "msg": "payment completed"}
                 await sockets.send_personal_message(json.dumps(msg_data), websocket)
                 await rcon.hdel("paymentsdata", id)
-                # await sockets.disconnect(websocket)
                 is_success = True
-                break
-            await asyncio.sleep(1) 
-        if not is_success:
-            data = {"status": "failed", "msg": "payment not completed"}
-            await sockets.send_personal_message(json.dumps(data), websocket)
     except Exception as e:
         # await sockets.disconnect(websocket)
         print("Error occured", e)
-    finally:
-        await sockets.disconnect(websocket)
-        print(f"WebSocket closed for ID: {id}")
-    
+    if not is_success:
+        data = {"status": "failed", "msg": "payment not completed"}
+        await sockets.send_personal_message(json.dumps(data), websocket)
