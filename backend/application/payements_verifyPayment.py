@@ -17,7 +17,6 @@ router = fastapi.APIRouter(prefix='/payments',  tags=['Payments'])
 
 @router.get("/verifyPayment") 
 async def verifyPayment(token: str = fastapi.Query(...), PayerID: str = fastapi.Query(...)):
-    print(token, PayerID)
     rcon = await get_redis_connection()
     gateway =  getgatewayName("PayPal")
     query = {"order_id": token}

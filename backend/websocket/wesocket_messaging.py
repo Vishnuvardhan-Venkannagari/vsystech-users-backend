@@ -51,6 +51,6 @@ async def paymentSocket(websocket: WebSocket,id: str):
     except Exception as e:
         # await sockets.disconnect(websocket)
         print("Error occured", e)
-    if not is_success:
-        data = {"status": "failed", "msg": "payment not completed"}
-        await sockets.send_personal_message(json.dumps(data), websocket)
+    # if not is_success:
+    #     data = {"status": "failed", "msg": "payment not completed"}
+    #     await sockets.send_personal_message(json.dumps(data), websocket)
