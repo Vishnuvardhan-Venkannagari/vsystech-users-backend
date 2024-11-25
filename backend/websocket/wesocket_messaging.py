@@ -51,6 +51,7 @@ async def paymentSocket(websocket: WebSocket,id: str):
                     data = {"status": "failed", "msg": "payment cancelled"}
                 await sockets.send_personal_message(json.dumps(data), websocket)
                 await rcon.hdel("paymentsdata", id)
+                # await sockets.disconnect(websocket)
                 is_success = True
     except Exception as e:
         # await sockets.disconnect(websocket)
@@ -58,4 +59,4 @@ async def paymentSocket(websocket: WebSocket,id: str):
     if not is_success:
         data = {"status": "failed", "msg": "payment not completed"}
         await sockets.send_personal_message(json.dumps(data), websocket)
-        await sockets.disconnect(websocket)
+        # await sockets.disconnect(websocket)
