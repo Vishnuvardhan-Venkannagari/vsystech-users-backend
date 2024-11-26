@@ -25,8 +25,9 @@ async def verifyPayment(token: str = fastapi.Query(...), PayerID: str = fastapi.
         return {"status": False, "msg": "No data found"}
     order_details = order_details["data"][0]
     verify_order = await gateway().verifyOrder(order_details)
-    print(verify_order)
+    print("In verify method",verify_order)
     if verify_order == "FAILED":
+        print("Inside if failed")
         data = {"status": "failed", "msg": "Payment not Completed"}
         update_doc = {"id": order_details["id"], 
             "payment_status": "FAILED",

@@ -132,7 +132,7 @@ class PayPal(PaymentGateways):
         )
         verify_response = verify_payement.json()
         print(verify_response)
-        if verify_payement != "COMPLETED":
+        if not verify_payement == "COMPLETED":
             return {"satus": "FAILED", "msg": "payment not completed"}
         return verify_response
 
