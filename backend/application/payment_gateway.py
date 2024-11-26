@@ -130,9 +130,11 @@ class PayPal(PaymentGateways):
             gateway_details["gateway"]["base_url"] + f"/checkout/orders/{order_id}/capture",
             headers=headers
         )
+        if  verify_payement.status_code not in [200, 201, 203, 204, 205]:
+            return {"satus": "FAILED", "msg": "payment not completed"}
         verify_response = verify_payement.json()
         print(verify_response)
-        if not verify_payement.get("status", "") == "COMPLETED":
+        if not verify_response.get("status", "") == "COMPLETED":
             return {"satus": "FAILED", "msg": "payment not completed"}
         return verify_response
 
