@@ -47,8 +47,8 @@ async def verifyPayment(token: str = fastapi.Query(...), PayerID: str = fastapi.
         "c": order_details["c"],
         "u": datetime.utcnow(),
         "tid": order_details["id"],
-        "payment_id": verify_order.get("purchase_units", [])[1].get("payments", {}).get("captures", {}).get("id", ""),
-        "paid_amt": float(verify_order.get("purchase_units", [])[1].get("payments", {}).get("captures", {}).get("amount", {}).get("value", ""))
+        "payment_id": verify_order.get("purchase_units", [])[0].get("payments", {}).get("captures", [])[0].get("id", ""),
+        "paid_amt": float(verify_order.get("purchase_units", [])[0].get("payments", {}).get("captures", [])[0].get("amount", {}).get("value", 0)),
 
     }
     updatePayment = await Payments(**update_doc).update()
