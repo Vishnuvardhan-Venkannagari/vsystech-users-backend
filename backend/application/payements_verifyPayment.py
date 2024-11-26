@@ -35,6 +35,7 @@ async def verifyPayment(token: str = fastapi.Query(...), PayerID: str = fastapi.
             "tid": order_details["id"]
         }
         updatePayment = await Payments(**update_doc).update()
+        await rcon.hset("paymentsdata", token, json.dumps(data))
         print(updatePayment)
         return {"status": False, "msg": "Payment Failed"}
     data = {"status": "success", "msg": "Payment completed Success"}
