@@ -18,10 +18,11 @@ async def createPurchase(data):
     print(data)
     for prod in data["products"]:
         print(prod)
+        print(type(data["created"]))
         create_data = {
             "payment_id": data["payment_id"],
-            "order_date": data["c"],
-            "delivery_date": data["c"],
+            "order_date": data["created"],
+            "delivery_date": data["created"],
             "returned": False,
             "is_delivered": False,
             "product_image": "",
