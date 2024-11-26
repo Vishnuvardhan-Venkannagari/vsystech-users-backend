@@ -6,7 +6,7 @@ import sys
 import os
 sys.path.append(os.getcwd() + "/framework")
 import restapi
-from vsystech_users_models import UserPurchase, Products
+from vsystech_users_models import UserPurchase, Products, CartItem
 from datetime import datetime, timedelta
 import bson
 
@@ -34,6 +34,14 @@ async def createPurchase(data):
             "tid": str(bson.ObjectId()) 
         }
         created_purchases.append(await UserPurchase(**create_data).create())
+        update_data = {
+            "id": prod["cart_id"],
+            "status": "Purchased",
+            "c": datetime.utcnow(),
+            "u": datetime.utcnow(),
+            "tid": prod["cart_id"]
+        }
+        return await CartItem(**update_data).update()
     print(created_purchases)
     return created_purchases
     # return await Use.get(id)
