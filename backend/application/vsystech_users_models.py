@@ -197,3 +197,7 @@ class UserPurchase(mongomodel.MongoModel):
     tracking_id: typing.Optional[str] = pydantic.Field("")
     product: typing.Optional[PaymentProductRef] = pydantic.Field({})
     userData: typing.Optional[UserRef] = pydantic.Field({})
+
+    class Config:
+        db_collection = 'vsystech'
+        collection_name = 'userpurchase'
