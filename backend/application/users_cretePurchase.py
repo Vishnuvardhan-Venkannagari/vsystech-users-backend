@@ -16,10 +16,7 @@ router = fastapi.APIRouter(prefix='/users',  tags=['Users'])
 @router.get('/createPurchase', tags=['Users']) #response_model=Users
 async def createPurchase(data):
     created_purchases = []
-    print(data)
     for prod in data["products"]:
-        print(prod)
-        print(type(data["created"]))
         product_data = await Products.get(prod["id"])
         product_data = product_data.dict()
         create_data = {

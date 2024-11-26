@@ -140,6 +140,7 @@ class PaymentProductRef(pydantic.BaseModel):
     id: str = pydantic.Field(**{})
     name: str = pydantic.Field(**{})
     price: float = pydantic.Field(**{})
+    cart_id: typing.Optional[str] = pydantic.Field("")
 
 class RefundedByUserRef(pydantic.BaseModel):
     uid: typing.Optional[str] = pydantic.Field("")

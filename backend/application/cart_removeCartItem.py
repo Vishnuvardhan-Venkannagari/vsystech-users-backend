@@ -22,7 +22,6 @@ async def removeCartItem(data: RemoveCartItemParams):
     data = data.model_dump()
     cartItemData = await CartItem.get(data["cart_item_id"])
     cartItemData = cartItemData.dict()
-    # print(cartItemData)
     if not cartItemData:
         return {"status": False, "msg": "No Item found"}
     # auth_user = auth_user["user_data"]

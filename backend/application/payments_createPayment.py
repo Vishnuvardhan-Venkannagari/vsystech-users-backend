@@ -34,6 +34,7 @@ async def createPayment(data: PaymentCreatePayment):
             "id": item["productData"]["id"], 
             "name": item["productData"]["name"],  
             "price": item["productData"]["price"], 
+            "cart_id": item["id"]
         })
     if data["gateway_name"] == "PayPal":
         paypal_fee_percent = 0.029
