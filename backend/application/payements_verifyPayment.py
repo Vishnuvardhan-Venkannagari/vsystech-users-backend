@@ -50,6 +50,7 @@ async def verifyPayment(token: str = fastapi.Query(...), PayerID: str = fastapi.
 
     }
     updatePayment = await Payments(**update_doc).update()
+    updatePayment = updatePayment.dict()
     await createPurchase(updatePayment)
     return {"status": True, "msg": "success"}
     
