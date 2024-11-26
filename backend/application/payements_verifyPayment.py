@@ -26,7 +26,30 @@ async def verifyPayment(token: str = fastapi.Query(...), PayerID: str = fastapi.
     order_details = order_details["data"][0]
     verify_order = await gateway().verifyOrder(order_details)
     print(verify_order)
+    if verify_order == "FAILED":
+        data = {"status": "failed", "msg": "Payment not Completed"}
+        update_doc = {"id": order_details["id"], 
+            "payment_status": "FAILED",
+            "c": order_details["c"],
+            "u": datetime.utcnow(),
+            "tid": order_details["id"]
+        }
+        updatePayment = await Payments(**update_doc).update()
+        print(updatePayment)
+        return {"status": False, "msg": "Payment Failed"}
     data = {"status": "success", "msg": "Payment completed Success"}
     await rcon.hset("paymentsdata", token, json.dumps(data))
+    update_doc = {
+        "id": order_details["id"], 
+        "payment_status": "PAID",
+        "c": order_details["c"],
+        "u": datetime.utcnow(),
+        "tid": order_details["id"],
+        "payment_id": verify_order.get("purchase_units", [])[1].get("payments", {}).get("captures", {}).get("id", ""),
+        "paid_amt": float(verify_order.get("purchase_units", [])[1].get("payments", {}).get("captures", {}).get("amount", {}).get("value", ""))
+
+    }
+    updatePayment = await Payments(**update_doc).update()
+    print(updatePayment)
     return {"status": True, "msg": "success"}
     

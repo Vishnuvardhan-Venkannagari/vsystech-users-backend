@@ -130,6 +130,8 @@ class PayPal(PaymentGateways):
             gateway_details["gateway"]["base_url"] + f"/checkout/orders/{order_id}/capture",
             headers=headers
         )
-        print(verify_payement.json())
-        return verify_payement.json()
+        verify_response = verify_payement.json()
+        if verify_payement != "COMPLETED":
+            return {"satus": "FAILED", "msg": "payment not completed"}
+        return verify_response
 

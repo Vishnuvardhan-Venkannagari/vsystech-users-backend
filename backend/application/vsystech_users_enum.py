@@ -14,7 +14,7 @@ class PaymentStatus(str, enum.Enum):
     Authorized = 'Authorized'
     Captured = 'Captured'
     Refunded = 'Refunded'
-    Failed = 'Failed'
+    Failed = 'FAILED'
     Pending = 'Pending'
 
 class ProductStatus(str, enum.Enum):
