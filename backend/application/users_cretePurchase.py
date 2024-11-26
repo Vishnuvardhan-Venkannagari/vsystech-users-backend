@@ -41,7 +41,7 @@ async def createPurchase(data):
             "u": datetime.utcnow(),
             "tid": prod["cart_id"]
         }
-        return await CartItem(**update_data).update()
+        await CartItem(**update_data).update()
     print(created_purchases)
     return created_purchases
     # return await Use.get(id)
