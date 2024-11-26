@@ -11,6 +11,7 @@ import bson
 import json
 from datetime import datetime
 import fastapi
+from users_cretePurchase import createPurchase
 from payment_gateway import getgatewayName
 
 router = fastapi.APIRouter(prefix='/payments',  tags=['Payments'])
@@ -49,5 +50,6 @@ async def verifyPayment(token: str = fastapi.Query(...), PayerID: str = fastapi.
 
     }
     updatePayment = await Payments(**update_doc).update()
+    await createPurchase(updatePayment)
     return {"status": True, "msg": "success"}
     

@@ -185,3 +185,15 @@ class PaymentCreatePayment(pydantic.BaseModel):
 class PaymentVerifyPayment(pydantic.BaseModel):
     payment_id: str = pydantic.Field("")
     # order_amt: float = pydantic.Field(**{})
+
+class UserPurchase(mongomodel.MongoModel):
+    id: typing.Optional[str] = pydantic.Field("")
+    payment_id: str = pydantic.Field("")
+    order_date: typing.Optional[datetime.datetime] = pydantic.Field("")
+    delivery_date: typing.Optional[datetime.datetime] = pydantic.Field("")
+    returned: bool = pydantic.Field(False)
+    is_delivered: bool = pydantic.Field(False)
+    product_image: str = pydantic.Field("")
+    tracking_id: typing.Optional[str] = pydantic.Field("")
+    product: typing.Optional[PaymentProductRef] = pydantic.Field({})
+    userData: typing.Optional[UserRef] = pydantic.Field({})
