@@ -19,6 +19,7 @@ async def addToCart(data: AddCartItemParams):
     if not auth_user:
         return {"satus": False, "msg": "No user found"}
     auth_user = auth_user["user_data"]
+    print(auth_user)
     data = data.model_dump()
     productdata = await Products.get(data["product_id"])
     productdata = productdata.dict()
