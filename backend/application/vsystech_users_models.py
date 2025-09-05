@@ -202,3 +202,30 @@ class UserPurchase(mongomodel.MongoModel):
     class Config:
         db_collection = 'vsystech'
         collection_name = 'userpurchase'
+
+
+class CustomerRef(pydantic.BaseModel):
+    id: typing.Optional[str] = pydantic.Field("")
+    name: typing.Optional[str] = pydantic.Field("")
+
+class SupportTeamRef(pydantic.BaseModel):
+    id: typing.Optional[str] = pydantic.Field("")
+    name: typing.Optional[str] = pydantic.Field("")
+
+class SupportMessages(pydantic.BaseModel):
+    sender: typing.Optional[str] = pydantic.Field("")
+    content: typing.Optional[str] = pydantic.Field("")
+    timestamp: typing.Optional[str] = pydantic.Field("")
+    is_ai_response: typing.Optional[float] = pydantic.Field(False)
+
+class SupportTicket(mongomodel.MongoModel):
+    id: typing.Optional[str] = pydantic.Field("")
+    status: typing.Optional[vsystech_users_enum.TicketStatus] = pydantic.Field("")
+    customer_ref: typing.Optional[CustomerRef] = pydantic.Field({})
+    support_team_ref: typing.Optional[SupportTeamRef] = pydantic.Field({})
+    messages: typing.Optional[typing.List[SupportMessages]] = pydantic.Field({})
+
+    class Config:
+        db_collection = 'vsystech'
+        collection_name = 'tickets'
+

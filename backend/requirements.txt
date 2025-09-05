@@ -31,3 +31,5 @@ contextvars
 redis
 pydantic[dotenv]
 pyrebase4
+openai
+dotenv

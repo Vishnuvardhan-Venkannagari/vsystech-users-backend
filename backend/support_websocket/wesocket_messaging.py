@@ -7,6 +7,9 @@ import datetime
 import os
 from redispool import get_redis_connection
 import json
+sys.path.append(os.getcwd() + "application/")
+from vsystech_users_models import SupportTicket
+from ai_bot_response import get_ai_response
 
 router = APIRouter()
 
@@ -50,9 +53,9 @@ sockets = ConnectionManager()
 @router.websocket("/ws/{id}")
 async def message(websocket: WebSocket,id: str):
     await sockets.connect(websocket, id)
-    rcon = await get_redis_connection()
-    is_success = False
-    startTime = datetime.datetime.utcnow().timestamp()
+    # rcon = await get_redis_connection()
+    # is_success = False
+    # startTime = datetime.datetime.utcnow().timestamp()
     try:
         
         while True:
@@ -70,6 +73,23 @@ async def message(websocket: WebSocket,id: str):
             message_doc["chat_id"] = message_doc["room_id"]
             await sockets.broadcast(json.dumps(message_doc))
             print("Broadcasted message:", message_doc)
+            
+            ai_response = await get_ai_response(message_doc["message"])
+            bot_message = {
+                "room_id": msg_data.get("room_id"),
+                "sender_id": "ai_bot",
+                "sender_name": "VSYSTECH Support Bot",
+                "message": ai_response["message"],
+                "timestamp": datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"),
+                "needs_escalation": ai_response["needs_escalation"]
+            }
+            result = await message_collection.insert_one(bot_message)
+            bot_message["_id"] = str(result.inserted_id)
+            bot_message["chat_id"] = bot_message["room_id"]
+
+            await sockets.broadcast(json.dumps(bot_message))
+            print("Broadcasted AI message:", bot_message)
+
 
     except WebSocketDisconnect:
         print("WebSocket disconnected")

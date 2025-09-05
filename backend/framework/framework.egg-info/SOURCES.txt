@@ -1,7 +1,8 @@
 __main__.py
 context.py
 firebasemodel.py
-queryparms.py
+mongomodel.py
+queryparams.py
 redispool.py
 restapi.py
 setup.py

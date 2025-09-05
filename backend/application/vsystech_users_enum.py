@@ -20,3 +20,10 @@ class PaymentStatus(str, enum.Enum):
 class ProductStatus(str, enum.Enum):
     InStock = "InStock"
     OutOFStock = "OutOFStock"
+
+
+class TicketStatus(str, enum.Enum):
+    Open = "Open"
+    Closed = "Closed"
+    Assigned = "Assigned"
+
