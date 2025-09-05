@@ -19,6 +19,9 @@ prepareforUpdate() {
     if [ ! -d /opt/backend/websocket ]; then
           mkdir -p /opt/backend/websocket
     fi
+    if [ ! -d /opt/backend/support_websocket ]; then
+          mkdir -p /opt/backend/support_websocket
+    fi
 }
 
 updateCode() {
@@ -29,6 +32,7 @@ updateCode() {
     rsync -aSP $BASEDIR/framework/ /opt/backend/framework/ --delete
     rsync -aSP $BASEDIR/application/ /opt/backend/application/ --delete --exclude .env
     rsync -aSP $BASEDIR/websocket/ /opt/backend/websocket/ --delete --exclude .env
+    rsync -aSP $BASEDIR/support_websocket/ /opt/backend/support_websocket/ --delete --exclude .env
     # rsync -aSP $BASEDIR/opt/socialswag/adminportal/ /opt/socialswag/adminportal/ --delete --exclude .env
    
     # if [ ! -f /opt/socialswag/integrations/.env ]; then
