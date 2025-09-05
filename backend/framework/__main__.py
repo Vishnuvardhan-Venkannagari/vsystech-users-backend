@@ -14,7 +14,7 @@ args = parser.parse_args()
 if __name__ == "__main__":
     debug: bool = False
     reload: bool = False
-    port: int = int(os.environ.get("PORT", 8000))
+    port: int = int(os.environ.get("PORT", 8010))
     host: str = str(os.environ.get("HOST", "127.0.0.1"))
     if args.config:
         sys.exit(0)
