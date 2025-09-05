@@ -50,7 +50,7 @@ class ConnectionManager:
             await self.disconnect(ws)
 sockets = ConnectionManager()
 
-@router.websocket("/ws/{id}")
+@router.websocket("/chat-ws/{id}")
 async def message(websocket: WebSocket,id: str):
     await sockets.connect(websocket, id)
     # rcon = await get_redis_connection()
@@ -73,7 +73,7 @@ async def message(websocket: WebSocket,id: str):
             message_doc["chat_id"] = message_doc["room_id"]
             await sockets.broadcast(json.dumps(message_doc))
             print("Broadcasted message:", message_doc)
-            
+
             ai_response = await get_ai_response(message_doc["message"])
             bot_message = {
                 "room_id": msg_data.get("room_id"),
