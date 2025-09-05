@@ -11,7 +11,18 @@ sys.path.append(os.getcwd() + "application/")
 # from vsystech_users_models import SupportTicket
 from ai_bot_response import get_ai_response
 
-router = APIRouter()
+# router = APIRouter()
+
+app = FastAPI()
+app.add_middleware(
+        CORSMiddleware,
+        allow_origins=['*'],
+        allow_methods=["*"],  # Include all methods
+        allow_headers=["*"],  # Allow all headers
+        allow_credentials=True
+)
+MaxReturnTime = 4 * 60
+
 
 mongo_client = AsyncIOMotorClient("mongodb://admin:admin@localhost:27017")
 mongo_db = mongo_client["message_app"]
@@ -50,7 +61,7 @@ class ConnectionManager:
             await self.disconnect(ws)
 sockets = ConnectionManager()
 
-@router.websocket("/chat-ws/{id}")
+@app.websocket("/chat-ws/{id}")
 async def message(websocket: WebSocket,id: str):
     await sockets.connect(websocket, id)
     # rcon = await get_redis_connection()
