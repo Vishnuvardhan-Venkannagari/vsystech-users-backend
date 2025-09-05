@@ -8,7 +8,7 @@ import os
 from redispool import get_redis_connection
 import json
 sys.path.append(os.getcwd() + "application/")
-from vsystech_users_models import SupportTicket
+# from vsystech_users_models import SupportTicket
 from ai_bot_response import get_ai_response
 
 router = APIRouter()
